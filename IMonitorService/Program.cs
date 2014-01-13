@@ -11,7 +11,7 @@ namespace IMonitorService
     {
         static void Main(string[] args)
         {
-            StoreHost host = Common.GetStoreHost("1525");
+            StoreHost host = Common.GetStoreHost("6210");
             Console.WriteLine(host.PrinterIP);
             Console.WriteLine(host.RouterIP);
             Console.WriteLine(host.LaptopIP1);

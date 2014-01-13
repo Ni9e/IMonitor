@@ -44,6 +44,8 @@
     <Compile Include="Code\Common.cs" />
     <Compile Include="Code\SqlHelper.cs" />
     <Compile Include="Code\StoreHost.cs" />
+    <Compile Include="Code\StoreInformation.cs" />
+    <Compile Include="Code\StoreIP.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

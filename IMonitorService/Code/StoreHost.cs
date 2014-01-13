@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace IMonitorService.Code
 {
-    public class StoreHost
+    public class StoreHost : StoreIP
     {
-        public List<string> Urls { get; set; }  // 打印机Url地址
-        public string PrinterIP { get; set; }   // 打印机IP
-        public string RouterIP { get; set; }    // 路由器IP
-        public string LaptopIP1 { get; set; }   // 笔记本IP1
-        public string LaptopIP2 { get; set; }   // 笔记本IP2
+        public List<string> Urls { get; set; }  // 打印机Url地址        
         public string Html { get; set; }        // 打印机页面
-        public string Status { get; set; }      // 状态
-        
+        public string Status { get; set; }      // 状态        
+
+        public StoreHost()
+        {
+            Urls = new List<string>();
+        }
     }
 }

@@ -10,8 +10,7 @@ namespace IMonitorService.Code
     {
         public static StoreHost GetStoreHost(string storeNo)
         {
-            StoreHost host = new StoreHost();
-            host.Urls = new List<string>();
+            StoreHost host = new StoreHost();            
             string url = "http://10.1" + storeNo.Substring(0, 2) + "." + storeNo.Substring(2, 2);
             host.PrinterIP = (url + ".100").Substring(7);
             host.RouterIP = (url + ".1").Substring(7);

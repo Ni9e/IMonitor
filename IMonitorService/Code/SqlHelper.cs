@@ -60,8 +60,88 @@ namespace IMonitorService.Code
 
         #region StoreInformation
 
+        public static void TruncateStoreInformationTemp()
+        {
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                string sql = "truncate table dbo.StoreInformationTemp;";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+        }
 
+        public static void InsertStoreInformationTemp()
+        {
+            DataSet ds = SqlHelper.GetOpeningStores();
+            List<StoreInformation> list = new List<StoreInformation>();
+            int count = ds.Tables[0].Rows.Count;
+            for (int i = 0; i < count; i++ )
+            {
+                string storeNo = ds.Tables[0].Rows[i][0].ToString();
+                StoreHost host = Common.GetStoreHost(storeNo);
+                StoreInformation store = new StoreInformation(host);
+                store.StoreNo = storeNo;
+                store.StoreRegion = ds.Tables[0].Rows[i][1].ToString();
+                store.StoreType = ds.Tables[0].Rows[i][2].ToString();
+                list.Add(store);
+            }
 
+            string[] clist = { "storeNo", "storeRegion", "storeType", "printerIP", "routerIP", "laptopIP1", "laptopIP2", "emailAddress", "printerType", "tonerType", "routerType" };
+            DataTable dt = new DataTable();
+            foreach (string colname in clist)
+            {
+                dt.Columns.Add(colname);
+            }
+            int rowcount = list.Count;
+            for (int i = 0; i < rowcount; i++ )
+            {
+                DataRow row = dt.NewRow();
+                row["storeNo"] = list[i].StoreNo;
+                row["storeRegion"] = list[i].StoreRegion;
+                row["storeType"] = list[i].StoreType;
+                row["printerIP"] = list[i].PrinterIP;
+                row["routerIP"] = list[i].RouterIP;
+                row["laptopIP1"] = list[i].LaptopIP1;
+                row["laptopIP2"] = list[i].LaptopIP2;
+                row["emailAddress"] = null;
+                row["printerType"] = null;
+                row["tonerType"] = null;
+                row["routerType"] = null;
+                dt.Rows.Add(row);
+            }
+            SqlHelper.TruncateStoreInformationTemp();
+            SqlHelper.CommonBulkInsert(dt, "StoreInformationTemp");
+        }
+
+        public static void SyncStoreInformation()
+        {
+            SqlHelper.InsertStoreInformationTemp();
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                string sql = "insert dbo.StoreInformation select * from dbo.StoreInformationTemp where storeNo in(select storeNo from dbo.StoreInformationTemp except select storeNo from dbo.StoreInformation); delete dbo.StoreInformation where storeNo in(select storeNo from dbo.StoreInformation except select storeNo from dbo.StoreInformationTemp);";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+        }
+
+        public static DataSet GetStoreInformation()
+        {
+            DataSet ds = new DataSet();
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                string sql = "select * from dbo.StoreInformation order by storeNo;";
+                SqlDataAdapter da = new SqlDataAdapter();
+                da.SelectCommand = new SqlCommand(sql, conn);
+                conn.Open();
+                da.Fill(ds);
+                conn.Close();
+            }
+            return ds;
+        }
         #endregion
     }
 }

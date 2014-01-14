@@ -14,6 +14,19 @@ namespace IMonitorService.Code
         public string EmailAddress { get; set; }
         public string PrinterType { get; set; }
         public string TonerType { get; set; }
-        public string RouterType { get; set; }        
+        public string RouterType { get; set; }
+
+        public StoreInformation()
+        {
+
+        }
+
+        public StoreInformation(StoreHost host)
+        {
+            this.PrinterIP = host.PrinterIP;
+            this.RouterIP = host.RouterIP;
+            this.LaptopIP1 = host.LaptopIP1;
+            this.LaptopIP2 = host.LaptopIP2;
+        }
     }
 }

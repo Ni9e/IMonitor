@@ -29,6 +29,22 @@ CREATE TABLE StoreInformation
 	routerType		nvarchar(100)
 )
 
+-- Create table StoreInformationTemp
+CREATE TABLE StoreInformationTemp
+(
+	storeNo			nvarchar(50)	primary key,
+	storeRegion		nvarchar(50),
+	storeType		nvarchar(50),
+	printerIP		nvarchar(50),
+	routerIP		nvarchar(50),
+	laptopIP1		nvarchar(50),
+	laptopIP2		nvarchar(50),
+	emailAddress	nvarchar(200),
+	printerType		nvarchar(100),
+	tonerType		nvarchar(100),
+	routerType		nvarchar(100)
+)
+
 -- Create table PrinterInformation
 CREATE TABLE PrinterInformation
 (

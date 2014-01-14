@@ -20,5 +20,6 @@ namespace IMonitorService.Code
             host.Urls.Add(url + ".100" + "/hp/device/info_deviceStatus.html");
             return host;
         }
+
     }
 }

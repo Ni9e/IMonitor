@@ -1,0 +1,73 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+  <!-- Loading Bootstrap -->    
+  <link href="/contents/bootstrap/css/bootstrap.css" rel="stylesheet" />
+
+  <!-- Loading Flat UI -->
+  <link href="/contents/css/flat-ui.css" rel="stylesheet">
+
+  <link rel="shortcut icon" href="/contents/images/favicon.ico">
+
+  <link href="/contents/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" />
+  <link href="/contents/css/ui.jqgrid.css" rel="stylesheet" />
+
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
+  <!--[if lt IE 9]>
+    <script src="contents/js/html5shiv.js"></script>
+  <![endif]-->
+  <script src="/contents/js/jquery-1.10.2.min.js"></script>
+  <script src="/contents/js/jquery-ui-1.10.3.custom.min.js"></script>    
+
+  <script src="/contents/js/grid.locale-cn.js"></script>
+  <script src="/contents/js/jquery.jqGrid.min.js"></script>
+  <asp:ContentPlaceHolder id="head" runat="server">
+  </asp:ContentPlaceHolder>
+</head>
+<body>
+    <div class="navbar navbar-default navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-collapse-01"></button>
+            </div>
+            <div class="navbar-collapse collapse navbar-collapse-01">
+                <ul class="nav navbar-nav navbar-left">
+                    <!-- Menu items go here -->
+                    <li id="mindex"><a href="#fakelink">首页</a></li>
+                    <li id="mprint"><a href="#fakelink">打印机</a></li>                    
+                    <li id="mstores"><a href="#fakelink">门店IP</a></li>
+                    <li id="mreport"><a href="#fakelink">报表</a>
+                        <ul>
+                            <!-- Sub Menu items go here -->
+                             <li id="mprintrepo"><a href="#fakelink">打印机报表</a></li>
+                             <li id="mrouterepo"><a href="#fakelink">路由器报表</a></li>
+                        </ul>
+                    </li>                    
+                </ul>                
+            </div>
+        </div>
+    </div>    
+    <div class="container-fluid">
+        <div class="alert alert-success" style="display:none;" id="alertbar"></div>
+        <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
+        
+        </asp:ContentPlaceHolder>
+    </div>
+    <!-- Load JS here for greater good =============================--> 
+    <script src="/contents/js/jquery.ui.touch-punch.min.js"></script>
+    <script src="/contents/js/bootstrap.min.js"></script>
+    <script src="/contents/js/bootstrap-select.js"></script>
+    <script src="/contents/js/bootstrap-switch.js"></script>
+    <script src="/contents/js/flatui-checkbox.js"></script>
+    <script src="/contents/js/flatui-radio.js"></script>
+    <script src="/contents/js/jquery.tagsinput.js"></script>
+    <script src="/contents/js/jquery.placeholder.js"></script>     
+    
+</body>
+</html>

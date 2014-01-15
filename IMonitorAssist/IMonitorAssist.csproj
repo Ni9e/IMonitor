@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FF2A1C5F-6F88-4416-BAC3-B4DEFFD54E0A}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{6522744F-B1B0-46AF-B403-8A1DEA8FC9D1}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IMonitorService</RootNamespace>
-    <AssemblyName>IMonitorService</AssemblyName>
+    <RootNamespace>IMonitorAssist</RootNamespace>
+    <AssemblyName>IMonitorAssist</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -39,12 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Code\Common.cs" />
-    <Compile Include="Code\SqlHelper.cs" />
-    <Compile Include="Code\StoreHost.cs" />
-    <Compile Include="Code\StoreInformation.cs" />
-    <Compile Include="Code\StoreIP.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IMonitorService\IMonitorService.csproj">
+      <Project>{ff2a1c5f-6f88-4416-bac3-b4deffd54e0a}</Project>
+      <Name>IMonitorService</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

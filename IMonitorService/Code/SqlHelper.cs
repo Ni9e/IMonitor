@@ -58,6 +58,35 @@ namespace IMonitorService.Code
             }
         }
 
+        /// <summary>
+        /// 非查询（插入，修改，删除）
+        /// </summary>
+        /// <param name="spName"></param>
+        /// <param name="paras"></param>
+        /// <returns></returns>
+        public static int ExecuteNonQuery(string spName, SqlParameter[] paras)
+        {
+            int rows;
+            using (SqlConnection con = new SqlConnection(connLocal))
+            {
+                using (SqlCommand com = new SqlCommand())
+                {
+                    com.Connection = con;
+                    com.CommandText = spName;
+                    com.CommandType = CommandType.StoredProcedure;
+                    com.CommandTimeout = 300;
+                    if (paras != null)
+                    {
+                        com.Parameters.AddRange(paras);
+                    }
+                    con.Open();
+                    rows = com.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            return rows;
+        }
+
         #region StoreInformation
 
         public static void TruncateStoreInformationTemp()
@@ -141,6 +170,30 @@ namespace IMonitorService.Code
                 conn.Close();
             }
             return ds;
+        }
+
+        public static void UpdateStoreInformation(StoreInformation store)
+        {
+            SqlParameter[] paras = {
+                                        new SqlParameter("@storeNo",store.StoreNo),
+                                        new SqlParameter("@printerIP",store.PrinterIP),
+                                        new SqlParameter("@routerIP",store.RouterIP),
+                                        new SqlParameter("@laptopIP1",store.LaptopIP1),
+                                        new SqlParameter("@laptopIP2",store.LaptopIP2),
+                                        new SqlParameter("@emailAddress",store.EmailAddress),
+                                        new SqlParameter("@printerType",store.PrinterType),
+                                        new SqlParameter("@tonerType",store.TonerType),
+                                        new SqlParameter("@routerType",store.RouterType)
+                                   };
+            SqlHelper.ExecuteNonQuery("UpdateStoreInformation", paras);
+        }
+
+        public static void DeleteStoreInformation(string storeNo)
+        {
+            SqlParameter[] paras = { 
+                                       new SqlParameter("@storeNo", storeNo) 
+                                   };
+            SqlHelper.ExecuteNonQuery("DeleteStoreInformation", paras);
         }
         #endregion
     }

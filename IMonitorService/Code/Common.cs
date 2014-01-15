@@ -3,11 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
+using System.Net;
 
 namespace IMonitorService.Code
 {
     public class Common
     {
+        public static int count = 0; // 打印机抓取完成计数
+        public static List<PrinterInformation> PrinterList { get; set; }
+        const int defaultTimeout = 10 * 1000; // 打印机抓取超时，10秒
+        public static int storeCount = 0; // 店铺数量
+        
         public static StoreHost GetStoreHost(string storeNo)
         {
             StoreHost host = new StoreHost();            
@@ -21,5 +28,10 @@ namespace IMonitorService.Code
             return host;
         }
 
+        #region 打印机信息抓取
+
+        
+
+        #endregion
     }
 }

@@ -49,9 +49,13 @@ CREATE TABLE StoreInformationTemp
 CREATE TABLE PrinterInformation
 (
 	storeNo			nvarchar(50),
+	storeRegion		nvarchar(50),
+	storeType		nvarchar(50),
 	printerNetwork	nvarchar(50),
 	printerStatus	nvarchar(200),
 	tonerStatus		nvarchar(200),
+	printerType		nvarchar(100),
+	tonerType		nvarchar(100),
 	date			datetime
 )
 
@@ -59,10 +63,15 @@ CREATE TABLE PrinterInformation
 CREATE TABLE FacilityInformation
 (
 	storeNo			nvarchar(50),
+	storeRegion		nvarchar(50),
+	storeType		nvarchar(50),
 	routerNetwork	nvarchar(50),
 	printerNetwork	nvarchar(50),
 	laptopNetwork	nvarchar(50),
 	printerService	nvarchar(50),
+	printerType		nvarchar(100),
+	tonerType		nvarchar(100),
+	routerType		nvarchar(100),
 	date			datetime
 )
 

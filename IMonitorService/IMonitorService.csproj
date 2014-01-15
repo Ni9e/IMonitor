@@ -40,6 +40,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Code\Common.cs" />
+    <Compile Include="Code\Pattern.cs" />
+    <Compile Include="Code\PrinterInformation.cs" />
+    <Compile Include="Code\PrinterType.cs" />
+    <Compile Include="Code\RequestState.cs" />
     <Compile Include="Code\SqlHelper.cs" />
     <Compile Include="Code\StoreHost.cs" />
     <Compile Include="Code\StoreInformation.cs" />

@@ -172,6 +172,21 @@ namespace IMonitorService.Code
             return ds;
         }
 
+        public static DataSet GetNonHKStoreInformation()
+        {
+            DataSet ds = new DataSet();
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                string sql = "select * from dbo.StoreInformation where storeRegion<>'HK' order by storeNo;";
+                SqlDataAdapter da = new SqlDataAdapter();
+                da.SelectCommand = new SqlCommand(sql, conn);
+                conn.Open();
+                da.Fill(ds);
+                conn.Close();
+            }
+            return ds;
+        }
+
         public static void UpdateStoreInformation(StoreInformation store)
         {
             SqlParameter[] paras = {

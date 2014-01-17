@@ -56,7 +56,10 @@ namespace IMonitorService.Code
                 ps = html.IndexOf("<title>");
                 pe = html.IndexOf("</title>");
                 html = html.Substring(ps + 7, pe - ps - 7).Replace("&nbsp;", " ").ToUpper();
-                state.Printer.PrinterType = html;
+                if (html != "DEVICE STATUS") // HP1300第二次抓取忽略打印机类型
+                {
+                    state.Printer.PrinterType = html.Substring(0, html.IndexOf("10.1")).Trim();
+                }                
 
                 if (html.IndexOf("HP LASERJET 400 M401N") != -1)
                 {
@@ -300,6 +303,7 @@ namespace IMonitorService.Code
                 }
             }
         }
+
         #endregion
     }
 }

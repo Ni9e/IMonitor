@@ -12,8 +12,8 @@ namespace IMonitorAssist
     class Program
     {           
         static void Main(string[] args)
-        {
-            Common.DoGetPrinterInfomationTask();
+        {            
+            Common.DoGetPrinterInfomationTask();            
         }        
     }
 }

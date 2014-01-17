@@ -211,5 +211,24 @@ namespace IMonitorService.Code
             SqlHelper.ExecuteNonQuery("DeleteStoreInformation", paras);
         }
         #endregion
+
+        #region PrinterInformation
+
+        public static void DelCurDatePrinterInformation()
+        {
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                string sql = "delete dbo.PrinterInformation where convert(nvarchar(10),date,127) = convert(nvarchar(10),GETDATE(),127)";
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
+        }
+
+
+        #endregion
     }
 }

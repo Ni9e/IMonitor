@@ -44,11 +44,23 @@
     <Compile Include="Code\PrinterInformation.cs" />
     <Compile Include="Code\PrinterType.cs" />
     <Compile Include="Code\RequestState.cs" />
+    <Compile Include="Code\SNMPStatus.cs" />
     <Compile Include="Code\SqlHelper.cs" />
     <Compile Include="Code\StoreHost.cs" />
     <Compile Include="Code\StoreInformation.cs" />
     <Compile Include="Code\StoreIP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="OLEPRNLib">
+      <Guid>{7586B340-EC08-11D0-A466-00C04FC30DF6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

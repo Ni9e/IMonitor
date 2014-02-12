@@ -41,23 +41,26 @@
         type: "get",
         url: "/Store/StoreJSON.aspx?status=sync",
         beforeSend: function (XMLHttpRequest) {
+          alertbar.removeClass("alert-danger").addClass("alert-success");
           alertbar.text("正在同步...");
           alertbar.fadeIn(1000);
         },
         success: function (data, textStatus) {
           alertbar.text(data);
-          alertbar.fadeOut(1000);
+          alertbar.fadeOut(2000);
           $('#tbStores').trigger('reloadGrid');
         },
         complete: function (XMLHttpRequest, textStatus) {
           //HideLoading();
         },
-        error: function () {
-          //请求出错处理                    
+        error: function (jqXHR, textStatus, errorThrown) {
+          //请求出错处理 
+          alertbar.removeClass("alert-success").addClass("alert-danger");
+          alertbar.text("无法同步");
         }
       });
     };
-
+    
     $('#tbStores').jqGrid({
       url: '/Store/StoreJSON.aspx?status=all',
       datatype: "json",
@@ -79,7 +82,7 @@
       sortname: 'StoreNo',
       viewrecords: true,
       sortorder: "desc",
-      caption: "店铺信息维护",
+      caption: "门店信息维护",
       height: 500,
       scrollrows: true,
       gridComplete: function () {

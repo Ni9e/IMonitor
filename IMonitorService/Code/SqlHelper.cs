@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
+using System.Net.Sockets;
 
 namespace IMonitorService.Code
 {
@@ -14,9 +15,12 @@ namespace IMonitorService.Code
 
         private static string connRemote = @"Data Source=10.15.130.78,51433;Initial Catalog=LUXERP;User ID=sa;Password=portal123;Max Pool Size = 512;Connection Timeout=15;";
         //private static string connLocal = @"Data Source=10.15.140.110;Initial Catalog=IMonitor;User ID=iwooo;Password=iwooo2013;Max Pool Size = 512;Connection Timeout=15;";
-        private static string connLocal = @"Data Source=.;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
-        
+        //private static string connLocal = @"Data Source=.;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
+        private static string connLocal = @"Data Source=FINKLE-WIN8\SQL2008R2;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
+
         #endregion
+
+        #region 通用        
 
         public static DataSet GetOpeningStores()
         {
@@ -57,13 +61,7 @@ namespace IMonitorService.Code
                 }
             }
         }
-
-        /// <summary>
-        /// 非查询（插入，修改，删除）
-        /// </summary>
-        /// <param name="spName"></param>
-        /// <param name="paras"></param>
-        /// <returns></returns>
+               
         public static int ExecuteNonQuery(string spName, SqlParameter[] paras)
         {
             int rows;
@@ -85,7 +83,9 @@ namespace IMonitorService.Code
                 }
             }
             return rows;
-        }
+        }        
+
+        #endregion
 
         #region StoreInformation
 
@@ -210,6 +210,7 @@ namespace IMonitorService.Code
                                    };
             SqlHelper.ExecuteNonQuery("DeleteStoreInformation", paras);
         }
+
         #endregion
 
         #region PrinterInformation

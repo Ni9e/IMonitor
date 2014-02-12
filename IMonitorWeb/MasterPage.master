@@ -40,7 +40,8 @@
                 <ul class="nav navbar-nav navbar-left">
                     <!-- Menu items go here -->
                     <li id="mindex"><a href="#fakelink">首页</a></li>
-                    <li id="mprint"><a href="#fakelink">打印机</a></li>                    
+                    <li id="mprint"><a href="#fakelink">打印机</a></li> 
+                    <li id="mfacility"><a href="#fakelink">设备状态</a></li>                   
                     <li id="mstores"><a href="/Store/StoreInformation.aspx">门店维护</a></li>
                     <li id="mreport"><a href="#fakelink">报表</a>
                         <ul>

@@ -15,8 +15,8 @@ namespace IMonitorService.Code
 
         private static string connRemote = @"Data Source=10.15.130.78,51433;Initial Catalog=LUXERP;User ID=sa;Password=portal123;Max Pool Size = 512;Connection Timeout=15;";
         //private static string connLocal = @"Data Source=10.15.140.110;Initial Catalog=IMonitor;User ID=iwooo;Password=iwooo2013;Max Pool Size = 512;Connection Timeout=15;";
-        //private static string connLocal = @"Data Source=.;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
-        private static string connLocal = @"Data Source=FINKLE-WIN8\SQL2008R2;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
+        private static string connLocal = @"Data Source=.;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
+        //private static string connLocal = @"Data Source=FINKLE-WIN8\SQL2008R2;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
 
         #endregion
 
@@ -117,7 +117,7 @@ namespace IMonitorService.Code
                 list.Add(store);
             }
 
-            string[] clist = { "storeNo", "storeRegion", "storeType", "printerIP", "routerIP", "laptopIP1", "laptopIP2", "emailAddress", "printerType", "tonerType", "routerType" };
+            string[] clist = { "storeNo", "storeRegion", "storeType", "printerIP", "routerIP", "laptopIP1", "laptopIP2", "fingerIP", "flowIP", "emailAddress", "printerType", "tonerType", "routerType" };
             DataTable dt = new DataTable();
             foreach (string colname in clist)
             {
@@ -134,6 +134,8 @@ namespace IMonitorService.Code
                 row["routerIP"] = list[i].RouterIP;
                 row["laptopIP1"] = list[i].LaptopIP1;
                 row["laptopIP2"] = list[i].LaptopIP2;
+                row["fingerIP"] = list[i].FingerIP;
+                row["flowIP"] = list[i].FlowIP;
                 row["emailAddress"] = null;
                 row["printerType"] = null;
                 row["tonerType"] = null;
@@ -195,6 +197,8 @@ namespace IMonitorService.Code
                                         new SqlParameter("@routerIP",store.RouterIP),
                                         new SqlParameter("@laptopIP1",store.LaptopIP1),
                                         new SqlParameter("@laptopIP2",store.LaptopIP2),
+                                        new SqlParameter("@fingerIP",store.FingerIP),
+                                        new SqlParameter("@flowIP",store.FlowIP),
                                         new SqlParameter("@emailAddress",store.EmailAddress),
                                         new SqlParameter("@printerType",store.PrinterType),
                                         new SqlParameter("@tonerType",store.TonerType),
@@ -209,6 +213,20 @@ namespace IMonitorService.Code
                                        new SqlParameter("@storeNo", storeNo) 
                                    };
             SqlHelper.ExecuteNonQuery("DeleteStoreInformation", paras);
+        }
+
+        public static void UpdatePrinterTypeFromPrinterInformation()
+        {
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                string sql = "update S set printerType = P.printerType	from dbo.StoreInformation S inner join dbo.PrinterInformation P on S.storeNo=P.storeNo	where P.printerType<>'' ";
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
         }
 
         #endregion
@@ -229,6 +247,84 @@ namespace IMonitorService.Code
             }
         }
 
+        public static DataSet GetPrinterInformation(PrinterCondition pc)
+        {
+            DataSet ds = new DataSet();
+            string sql = string.Empty;
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                switch (pc)
+                {
+                    case PrinterCondition.All:
+                        sql = "select * from dbo.PrinterInformation where convert(nvarchar(10),date,127) = convert(nvarchar(10),GETDATE(),127) order by storeNo";
+                        break;
+                    case PrinterCondition.Up:
+                        {
+                            sql = "select * from dbo.PrinterInformation where convert(nvarchar(10),date,127) = convert(nvarchar(10),GETDATE(),127) and printerNetwork='Up' ";
+                            sql += "order by (case when substring(tonerStatus,PATINDEX('%[0-9]%',tonerStatus),CHARINDEX('%',tonerStatus,1)-PATINDEX('%[0-9]%',tonerStatus))<>'' then CAST(substring(tonerStatus,PATINDEX('%[0-9]%',tonerStatus),CHARINDEX('%',tonerStatus,1)-PATINDEX('%[0-9]%',tonerStatus)) as int) else 999 end), storeNo";
+                        }
+                        break;
+                    case PrinterCondition.Down:
+                        sql = "select * from dbo.PrinterInformation where convert(nvarchar(10),date,127) = convert(nvarchar(10),GETDATE(),127) and printerNetwork='Down' order by storeNo";
+                        break;
+                }
+                SqlDataAdapter da = new SqlDataAdapter();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                da.SelectCommand = cmd;
+                conn.Open();
+                da.Fill(ds);
+                conn.Close();
+            }
+            return ds;
+        }
+
+        public static int GetPrinterCount(PrinterCondition pc)
+        {
+            DataSet ds = new DataSet();
+            string sql = string.Empty;
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                switch (pc)
+                {
+                    case PrinterCondition.All:
+                        sql = "select count(*) total from dbo.PrinterInformation where convert(nvarchar(10),date,127) = convert(nvarchar(10),GETDATE(),127)";
+                        break;
+                    case PrinterCondition.Up: // 墨盒低于10%的数量
+                        {
+                            sql = "select count(*) total from dbo.PrinterInformation where convert(nvarchar(10),date,127) = convert(nvarchar(10),GETDATE(),127) and printerNetwork='Up' ";
+                            sql += "and (case when substring(tonerStatus,PATINDEX('%[0-9]%',tonerStatus),CHARINDEX('%',tonerStatus,1)-PATINDEX('%[0-9]%',tonerStatus))<>'' then CAST(substring(tonerStatus,PATINDEX('%[0-9]%',tonerStatus),CHARINDEX('%',tonerStatus,1)-PATINDEX('%[0-9]%',tonerStatus)) as int) else 999 end) <= 10";
+                        }
+                        break;
+                    case PrinterCondition.Down:
+                        sql = "select count(*) total from dbo.PrinterInformation where convert(nvarchar(10),date,127) = convert(nvarchar(10),GETDATE(),127) and printerNetwork='Down'";
+                        break;
+                }
+                SqlDataAdapter da = new SqlDataAdapter();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                da.SelectCommand = cmd;
+                conn.Open();
+                da.Fill(ds);
+                conn.Close();
+            }
+            return Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString());
+        }
+
+        public static DataSet GetLowInkPrinter()
+        {
+            DataSet ds = new DataSet();
+            string sql = string.Empty;
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                sql = "select storeNo from dbo.PrinterInformation where convert(nvarchar(10),date,127) = convert(nvarchar(10),GETDATE(),127) and printerNetwork='Up' and (case when substring(tonerStatus,PATINDEX('%[0-9]%',tonerStatus),CHARINDEX('%',tonerStatus,1)-PATINDEX('%[0-9]%',tonerStatus))<>'' then CAST(substring(tonerStatus,PATINDEX('%[0-9]%',tonerStatus),CHARINDEX('%',tonerStatus,1)-PATINDEX('%[0-9]%',tonerStatus)) as int) else 999 end) <= 10 order by storeNo";
+                SqlDataAdapter da = new SqlDataAdapter();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                da.SelectCommand = cmd;
+                conn.Open();
+                da.Fill(ds);
+                conn.Close();
+            }
+            return ds;
+        }
 
         #endregion
     }

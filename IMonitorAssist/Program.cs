@@ -12,8 +12,15 @@ namespace IMonitorAssist
     class Program
     {           
         static void Main(string[] args)
-        {            
-            Common.DoGetPrinterInfomationTask();            
+        {
+            switch (args[0].ToUpper())
+            {
+                case "PRINT":
+                    {
+                        Common.DoGetPrinterInfomationTask();
+                    }
+                    break;
+            } 
         }        
     }
 }

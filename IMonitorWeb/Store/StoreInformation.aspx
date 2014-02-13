@@ -17,7 +17,7 @@
   </div>
 
   <script type="text/javascript">
-    $('#mstores').addClass('active');
+    $('#mstores').addClass('active');    
 
     var lastsel;
     var alertbar = $('#alertbar');
@@ -34,7 +34,7 @@
       var sel_id = $('#tbStores').jqGrid('getGridParam', 'selrow');
       var value = $('#tbStores').jqGrid('getCell', sel_id, 'StoreNo');
       return value;
-    }
+    };
 
     function sync() {
       $.ajax({
@@ -43,11 +43,11 @@
         beforeSend: function (XMLHttpRequest) {
           alertbar.removeClass("alert-danger").addClass("alert-success");
           alertbar.text("正在同步...");
-          alertbar.fadeIn(1000);
+          alertbar.fadeIn(1500);
         },
         success: function (data, textStatus) {
           alertbar.text(data);
-          alertbar.fadeOut(2000);
+          alertbar.fadeOut(1500);
           $('#tbStores').trigger('reloadGrid');
         },
         complete: function (XMLHttpRequest, textStatus) {
@@ -64,19 +64,21 @@
     $('#tbStores').jqGrid({
       url: '/Store/StoreJSON.aspx?status=all',
       datatype: "json",
-      colNames: ["店号", "区域", "类型", "打印机IP", "路由器IP", "笔记本IP1", "笔记本IP2", "邮件地址", "打印机型号", "墨盒型号", "路由器型号"],
+      colNames: ["店号", "区域", "类型", "打印机IP", "路由器IP", "笔记本IP1", "笔记本IP2", "指纹打卡IP", "人流量IP", "邮件地址", "打印机型号", "墨盒型号", "路由器型号"],
       colModel: [
           { name: "StoreNo", index: "StoreNo", width: 50, align: "center", editoptions: { readonly: "readonly" }, editable: true },
           { name: "StoreRegion", index: "StoreRegion", width: 50, align: "center", editable: false },
           { name: "StoreType", index: "StoreType", width: 50, align: "center", editable: false },
-          { name: "PrinterIP", index: "PrinterIP", width: 120, align: "center", editable: true },
-          { name: "RouterIP", index: "RouterIP", width: 120, align: "center", editable: true },
-          { name: "LaptopIP1", index: "LaptopIP1", width: 120, align: "center", editable: true },
-          { name: "LaptopIP2", index: "LaptopIP2", width: 120, align: "center", editable: true },
-          { name: "EmailAddress", index: "EmailAddress", width: 250, align: "center", editable: true },
-          { name: "PrinterType", index: "PrinterType", width: 100, align: "center", editable: true },
+          { name: "PrinterIP", index: "PrinterIP", width: 110, align: "center", editable: true },
+          { name: "RouterIP", index: "RouterIP", width: 105, align: "center", editable: true },
+          { name: "LaptopIP1", index: "LaptopIP1", width: 105, align: "center", editable: true },
+          { name: "LaptopIP2", index: "LaptopIP2", width: 105, align: "center", editable: true },
+          { name: "FingerIP", index: "FingerIP", width: 105, align: "center", editable: true },
+          { name: "FlowIP", index: "FlowIP", width: 105, align: "center", editable: true },
+          { name: "EmailAddress", index: "EmailAddress", width: 175, align: "center", editable: true },
+          { name: "PrinterType", index: "PrinterType", width: 200, align: "center", editable: true },
           { name: "TonerType", index: "TonerType", width: 100, align: "center", editable: true },
-          { name: "RouterType", index: "RouterType", width: 100, align: "center", editable: true },
+          { name: "RouterType", index: "RouterType", width: 85, align: "center", editable: true },
       ],
       rowNum: 500,
       sortname: 'StoreNo',
@@ -86,7 +88,7 @@
       height: 500,
       scrollrows: true,
       gridComplete: function () {
-        captionCenter('#tbStores');
+        captionCenter('#tbStores');        
       },            
       toppager: true,
       editurl: "/Store/StoreJSON.aspx",
@@ -113,8 +115,9 @@
       buttonicon: "ui-icon-transferthick-e-w",
       onClickButton: sync,
       position: "first"
-    });
+    });   
     
+    setTimeout("sync()", 2.5 * 1000);
   </script>
 </asp:Content>
 

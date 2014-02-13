@@ -15,7 +15,7 @@ namespace IMonitorService.Code
         public string TonerStatus { get; set; }
         public string PrinterType { get; set; }
         public string TonerType { get; set; }
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         public PrinterInformation()
         {

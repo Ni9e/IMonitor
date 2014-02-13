@@ -27,6 +27,8 @@ namespace IMonitorService.Code
             this.RouterIP = host.RouterIP;
             this.LaptopIP1 = host.LaptopIP1;
             this.LaptopIP2 = host.LaptopIP2;
+            this.FingerIP = host.FingerIP;
+            this.FlowIP = host.FlowIP;
         }
     }
 }

@@ -17,6 +17,8 @@ CREATE PROCEDURE dbo.UpdateStoreInformation
 	@routerIP		nvarchar(50),
 	@laptopIP1		nvarchar(50),
 	@laptopIP2		nvarchar(50),
+	@fingerIP		nvarchar(50),
+	@flowIP			nvarchar(50),
 	@emailAddress	nvarchar(200),
 	@printerType	nvarchar(100),
 	@tonerType		nvarchar(100),
@@ -26,6 +28,7 @@ AS
 BEGIN
 	UPDATE dbo.StoreInformation 
 	SET printerIP=@printerIP, routerIP=@routerIP, laptopIP1=@laptopIP1, laptopIP2=@laptopIP2,
+		fingerIP=@fingerIP, flowIP=@flowIP,
 		emailAddress=@emailAddress, printerType=@printerType, tonerType=@tonerType, routerType=@routerType
 	WHERE storeNo=@storeNo
 END

@@ -41,6 +41,8 @@
   <ItemGroup>
     <Compile Include="Code\Common.cs" />
     <Compile Include="Code\Pattern.cs" />
+    <Compile Include="Code\Pie.cs" />
+    <Compile Include="Code\PrinterCondition.cs" />
     <Compile Include="Code\PrinterInformation.cs" />
     <Compile Include="Code\PrinterType.cs" />
     <Compile Include="Code\RequestState.cs" />

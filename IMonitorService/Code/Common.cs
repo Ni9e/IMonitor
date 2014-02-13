@@ -28,7 +28,9 @@ namespace IMonitorService.Code
             host.PrinterIP = host.Url.Substring(7);
             host.RouterIP = (url + ".1").Substring(7);
             host.LaptopIP1 = (url + ".40").Substring(7);
-            host.LaptopIP2 = (url + ".50").Substring(7);           
+            host.LaptopIP2 = (url + ".50").Substring(7);
+            host.FingerIP = "";
+            host.FlowIP = "";
             
             return host;
         }
@@ -61,7 +63,7 @@ namespace IMonitorService.Code
                     state.Printer.PrinterType = html.Substring(0, html.IndexOf("10.1")).Trim();
                 }                
 
-                if (html.IndexOf("HP LASERJET 400 M401N") != -1)
+                if (html.IndexOf("HP LASERJET 400") != -1)
                 {
                     state.PrinterType = PrinterType.HPM401;                    
                 }
@@ -124,7 +126,7 @@ namespace IMonitorService.Code
                     }
                     break;
             }
-            state.Printer.Date = DateTime.Now;
+            state.Printer.Date = DateTime.Now.ToString();
         }
 
         private static void GetPrinterStatus(RequestState state, Pattern pat)
@@ -215,7 +217,7 @@ namespace IMonitorService.Code
                 state.Printer.PrinterStatus = ex.Message;
                 state.Printer.TonerStatus = ex.Message;
                 state.Printer.PrinterNetwork = "Down";
-                state.Printer.Date = DateTime.Now;
+                state.Printer.Date = DateTime.Now.ToString();
                 PrinterList.Add(state.Printer);
                 Console.WriteLine(count.ToString() + "/" + storeCount.ToString() + " " + state.Printer.StoreNo + ": " + ex.Message.ToString());
             }
@@ -239,6 +241,8 @@ namespace IMonitorService.Code
                 printer.TonerType = ds.Tables[0].Rows[i]["tonerType"].ToString();
 
                 state.Host = Common.GetStoreHost(printer.StoreNo);
+                state.Host.PrinterIP = ds.Tables[0].Rows[i]["printerIP"].ToString(); // IP设置为门店维护的IP                
+
                 state.Printer = printer;
                 try
                 {
@@ -252,7 +256,7 @@ namespace IMonitorService.Code
                         state.Printer.PrinterStatus = "打印机无法连接";
                         state.Printer.TonerStatus = "打印机无法连接";
                         state.Printer.PrinterNetwork = "Down";
-                        state.Printer.Date = DateTime.Now;
+                        state.Printer.Date = DateTime.Now.ToString();
                         PrinterList.Add(state.Printer);
                         Console.WriteLine(count.ToString() + "/" + storeCount.ToString() + " " + state.Printer.StoreNo + ": 打印机无法连接");
                     }
@@ -263,7 +267,7 @@ namespace IMonitorService.Code
                     state.Printer.PrinterStatus = ex.Message;
                     state.Printer.TonerStatus = ex.Message;
                     state.Printer.PrinterNetwork = "Down";
-                    state.Printer.Date = DateTime.Now;
+                    state.Printer.Date = DateTime.Now.ToString();
                     PrinterList.Add(state.Printer);
                     Console.WriteLine(count.ToString() + "/" + storeCount.ToString() + " " + state.Printer.StoreNo + ": " + ex.Message.ToString());
                     continue;
@@ -303,6 +307,7 @@ namespace IMonitorService.Code
                 }
             }
         }
+
 
         #endregion
     }

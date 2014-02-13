@@ -38,18 +38,26 @@
             </div>
             <div class="navbar-collapse collapse navbar-collapse-01">
                 <ul class="nav navbar-nav navbar-left">
-                    <!-- Menu items go here -->
-                    <li id="mindex"><a href="#fakelink">首页</a></li>
-                    <li id="mprint"><a href="#fakelink">打印机</a></li> 
-                    <li id="mfacility"><a href="#fakelink">设备状态</a></li>                   
-                    <li id="mstores"><a href="/Store/StoreInformation.aspx">门店维护</a></li>
-                    <li id="mreport"><a href="#fakelink">报表</a>
+                  <!-- Menu items go here -->
+                  <li id="mindex"><a href="#fakelink">首页</a></li>
+                  <li id="mstores"><a href="/Store/StoreInformation.aspx">门店维护</a></li>
+                  <li id="mfacility"><a href="#fakelink">门店设备</a>
                         <ul>
-                            <!-- Sub Menu items go here -->
-                             <li id="mprintrepo"><a href="#fakelink">打印机报表</a></li>
-                             <li id="mrouterepo"><a href="#fakelink">路由器报表</a></li>
+                          <!-- Sub Menu items go here -->
+                          <li id="mrouter"><a href="#fakelink">路由器</a></li>
+                          <li id="mprint"><a href="/Facility/Printer.aspx">打印机</a></li>                           
+                          <li id="mlaptop"><a href="#fakelink">笔记本</a></li>
+                          <li id="mfinger"><a href="#fakelink">指纹机</a></li>
+                          <li id="mflow"><a href="#fakelink">人流机</a></li>
                         </ul>
-                    </li>                    
+                  </li> 
+                  <li id="mreport"><a href="#fakelink">报表</a>
+                    <ul>
+                      <!-- Sub Menu items go here -->
+                      <li id="mprintrepo"><a href="#fakelink">打印机报表</a></li>
+                      <li id="mrouterepo"><a href="#fakelink">路由器报表</a></li>
+                    </ul>
+                  </li>                    
                 </ul>                
             </div>
         </div>

@@ -24,7 +24,7 @@ public partial class Store_StoreJSON : System.Web.UI.Page
             {
                 string query = Request.QueryString["status"].ToString();
                 if (query.ToUpper() == "ALL")
-                {
+                {                    
                     DataSet ds = SqlHelper.GetStoreInformation();
                     int count = ds.Tables[0].Rows.Count;
                     for (int i = 0; i < count; i++)
@@ -37,6 +37,8 @@ public partial class Store_StoreJSON : System.Web.UI.Page
                         store.RouterIP = ds.Tables[0].Rows[i]["routerIP"].ToString();
                         store.LaptopIP1 = ds.Tables[0].Rows[i]["laptopIP1"].ToString();
                         store.LaptopIP2 = ds.Tables[0].Rows[i]["laptopIP2"].ToString();
+                        store.FingerIP = ds.Tables[0].Rows[i]["fingerIP"].ToString();
+                        store.FlowIP = ds.Tables[0].Rows[i]["flowIP"].ToString();
                         store.EmailAddress = ds.Tables[0].Rows[i]["emailAddress"].ToString();
                         store.PrinterType = ds.Tables[0].Rows[i]["printerType"].ToString();
                         store.TonerType = ds.Tables[0].Rows[i]["tonerType"].ToString();
@@ -72,6 +74,8 @@ public partial class Store_StoreJSON : System.Web.UI.Page
                 store.RouterIP = Request.Form["RouterIP"].ToString();
                 store.LaptopIP1 = Request.Form["LaptopIP1"].ToString();
                 store.LaptopIP2 = Request.Form["LaptopIP2"].ToString();
+                store.FingerIP = Request.Form["FingerIP"].ToString();
+                store.FlowIP = Request.Form["FlowIP"].ToString();
                 store.EmailAddress = Request.Form["EmailAddress"].ToString();
                 store.PrinterType = Request.Form["PrinterType"].ToString();
                 store.TonerType = Request.Form["TonerType"].ToString();

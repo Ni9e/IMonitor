@@ -144,7 +144,8 @@
           //ShowLoading();
           mgetprint.hide();
           info.fadeToggle(2000);
-          time(200);
+          var t = parseInt($('#tbUP').getGridParam("reccount")) + parseInt($('#tbDown').getGridParam("reccount"));
+          time(t);
         },
         success: function (data, textStatus) {
           clearTimeout(id);

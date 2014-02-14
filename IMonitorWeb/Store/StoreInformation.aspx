@@ -3,7 +3,13 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
   <title>门店信息维护</title>
   <style type="text/css">
-    .ui-jqgrid .ui-pg-input { height:20px;font-size:.8em; margin: 0;}    
+    .ui-jqgrid .ui-pg-input { height:20px;font-size:.8em; margin: 0;}
+    .cell-hover {
+      color: blue;
+      font-weight: bold !important;
+      cursor: pointer;
+    }
+     
   </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
@@ -43,7 +49,7 @@
         beforeSend: function (XMLHttpRequest) {
           alertbar.removeClass("alert-danger").addClass("alert-success");
           alertbar.text("正在同步...");
-          alertbar.fadeIn(1500);
+          alertbar.fadeIn(1000);
         },
         success: function (data, textStatus) {
           alertbar.text(data);
@@ -89,7 +95,13 @@
       scrollrows: true,
       gridComplete: function () {
         captionCenter('#tbStores');        
-      },            
+      },
+      onCellSelect: function (rowid, iCol, cellcontent, e) {
+        if (iCol == 3) { 
+          var url = 'http://' + cellcontent;
+          window.open(url, '_blank');
+        }        
+      },
       toppager: true,
       editurl: "/Store/StoreJSON.aspx",
     });
@@ -115,9 +127,23 @@
       buttonicon: "ui-icon-transferthick-e-w",
       onClickButton: sync,
       position: "first"
-    });   
+    });
+
+    $("#tbStores").mouseover(function (e) {
+      var td = $(e.target).closest('td'),
+          ci = $.jgrid.getCellIndex(td[0]);
+      if (ci == 3) {
+        td.addClass('cell-hover');
+      }      
+    }).mouseout(function (e) {
+      var td = $(e.target).closest('td'),
+          ci = $.jgrid.getCellIndex(td[0]);
+      if (ci == 3) {
+        td.removeClass('cell-hover');
+      }      
+    });
     
-    setTimeout("sync()", 2.5 * 1000);
+    sync();
   </script>
 </asp:Content>
 

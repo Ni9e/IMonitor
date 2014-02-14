@@ -60,18 +60,8 @@ public partial class Facility_PrinterJSON : System.Web.UI.Page
                     }
                     break;
                 case "PRINT":
-                    {
-                        string path = Request.PhysicalApplicationPath;
-                        int idx = path.IndexOf("IMonitorWeb");
-                        path = path.Substring(0, idx) + @"IMonitorAssist\bin\Debug\IMonitorAssist.exe";
-                        
-                        Process p = new Process();
-                        p.StartInfo.CreateNoWindow = true;
-                        p.StartInfo.Arguments = "print";
-                        p.StartInfo.UseShellExecute = false;
-                        p.StartInfo.FileName = path;
-                        p.Start();
-                        p.WaitForExit();
+                    {                        
+                        IMonitorTask.GetTaskData(TaskCondition.Print);
                         Response.Write("打印机信息获取成功");
                         Response.End();
                         return; 

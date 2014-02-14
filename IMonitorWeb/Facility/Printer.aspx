@@ -133,7 +133,7 @@
         return;
       }
       info.text("正在获取打印机信息，大约" + s + "秒, 请勿切换页面");
-      id = setTimeout("time(" + (s - 1) + ")", 1000);
+      id = setTimeout("time(" + (s - 1) + ")", 1000);      
     }
 
     function getPrintData() {
@@ -143,9 +143,8 @@
         beforeSend: function (XMLHttpRequest) {
           //ShowLoading();
           mgetprint.hide();
-          info.fadeToggle(2000);
-          var t = parseInt($('#tbUP').getGridParam("reccount")) + parseInt($('#tbDown').getGridParam("reccount"));
-          time(t);
+          info.fadeToggle(2000);          
+          time(250); // 预估每个门店1秒, 后期首页加入
         },
         success: function (data, textStatus) {
           clearTimeout(id);

@@ -34,7 +34,7 @@ namespace IMonitorService.Code
             
             return host;
         }
-
+        
         #region 打印机信息抓取
 
         private static void TimeoutCallback(object state, bool timeOut)

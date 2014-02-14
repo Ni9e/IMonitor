@@ -327,5 +327,29 @@ namespace IMonitorService.Code
         }
 
         #endregion
+
+        #region RouterInformation
+
+        public static DataSet GetRouter()
+        {
+            DataSet ds = new DataSet();
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                string sql = "select * from dbo.RouterInformation order by storeNo;";
+                SqlDataAdapter da = new SqlDataAdapter();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                da.SelectCommand = cmd;
+                conn.Open();
+                da.Fill(ds);
+                conn.Close();
+            }
+            return ds;
+        }    
+
+        #endregion
+
+        #region LaptopInformation
+
+        #endregion
     }
 }

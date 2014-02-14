@@ -40,12 +40,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Code\Common.cs" />
+    <Compile Include="Code\LaptopInformation.cs" />
     <Compile Include="Code\Pattern.cs" />
     <Compile Include="Code\Pie.cs" />
     <Compile Include="Code\PrinterCondition.cs" />
     <Compile Include="Code\PrinterInformation.cs" />
     <Compile Include="Code\PrinterType.cs" />
+    <Compile Include="Code\TaskCondition.cs" />
     <Compile Include="Code\RequestState.cs" />
+    <Compile Include="Code\RouterCondition.cs" />
+    <Compile Include="Code\RouterInformation.cs" />
     <Compile Include="Code\SNMPStatus.cs" />
     <Compile Include="Code\SqlHelper.cs" />
     <Compile Include="Code\StoreHost.cs" />

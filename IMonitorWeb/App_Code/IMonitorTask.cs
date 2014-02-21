@@ -5,9 +5,6 @@ using System.Linq;
 using System.Web;
 using IMonitorService.Code;
 
-/// <summary>
-/// IMonitorProcess 的摘要说明
-/// </summary>
 public class IMonitorTask
 {
     public static void GetTaskData(TaskCondition tc)

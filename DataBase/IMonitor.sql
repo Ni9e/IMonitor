@@ -89,6 +89,17 @@ CREATE TABLE RouterInformation
 	date			datetime
 )
 
+
+CREATE TABLE RouterInformationTemp
+(
+	storeNo			nvarchar(50),
+	storeRegion		nvarchar(50),
+	storeType		nvarchar(50),
+	routerNetwork	nvarchar(50),	
+	routerType		nvarchar(100),
+	date			datetime
+)
+
 CREATE TABLE LaptopInformation
 (
 	storeNo			nvarchar(50),

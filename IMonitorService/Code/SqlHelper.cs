@@ -344,8 +344,61 @@ namespace IMonitorService.Code
                 conn.Close();
             }
             return ds;
-        }    
+        }
 
+        public static int GetRouterCount(RouterCondition rc)
+        {
+            DataSet ds = new DataSet();
+            string sql = string.Empty;
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                switch (rc)
+                {
+                    case RouterCondition.All:
+                        sql = "select COUNT(*) / 2 total from dbo.RouterInformation";
+                        break;
+                    case RouterCondition.Up:
+                        sql = "select COUNT(*) total from dbo.RouterInformation where routerNetwork='Up'";
+                        break;
+                    case RouterCondition.Down:
+                        sql = "select COUNT(*) total from dbo.RouterInformation where routerNetwork='Down'";
+                        break;
+                }
+                SqlDataAdapter da = new SqlDataAdapter();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                da.SelectCommand = cmd;
+                conn.Open();
+                da.Fill(ds);
+                conn.Close();
+            }
+            return Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString());
+        }
+
+        public static void DeleteRouterInformation()
+        {
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                string sql = "truncate table dbo.Router";
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
+        }
+
+        public static void InsertRouterInformation()
+        {
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                string sql = "truncate table dbo.RouterInformation;insert dbo.RouterInformation select a.storeNo, a.storeRegion, a.storeType, case when a.routerNetwork='Down' and b.routerNetwork='Down' then 'Down' else 'Up' end as routerNetwork, '', b.date from (select *, ROW_NUMBER() over(partition by storeNo,CONVERT(nvarchar(10),date,127) order by storeNo,date) n from dbo.RouterInformationTemp) a, (select *, ROW_NUMBER() over(partition by storeNo,CONVERT(nvarchar(10),date,127) order by storeNo,date) n from dbo.RouterInformationTemp) b where a.n=1 and b.n=2 and a.storeNo=b.storeNo and CONVERT(nvarchar(10),a.date,127)=CONVERT(nvarchar(10),b.date,127) and CONVERT(nvarchar(10),a.date,127) = CONVERT(nvarchar(10),GETDATE(),127);";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+        }
         #endregion
 
         #region LaptopInformation

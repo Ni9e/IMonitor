@@ -17,6 +17,7 @@ namespace IMonitorService.Code
     {
         public static int count = 0; // 打印机抓取完成计数
         public static List<PrinterInformation> PrinterList { get; set; }
+        public static List<RouterInformation> RouterList { get; set; }
         const int defaultTimeout = 10 * 1000; // 打印机抓取超时，10秒
         public static int storeCount = 0; // 店铺数量
         
@@ -307,7 +308,65 @@ namespace IMonitorService.Code
                 }
             }
         }
+        
+        #endregion
 
+        #region 路由器信息抓取
+
+        public static void DoGetRouterInformationTask()
+        {
+            RouterList = new List<RouterInformation>();
+            DataSet ds = SqlHelper.GetStoreInformation();
+            int count = ds.Tables[0].Rows.Count;
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            for (int i = 0; i < count; i++)
+            {
+                RouterInformation router = new RouterInformation();
+                router.StoreNo = ds.Tables[0].Rows[i]["storeNo"].ToString();
+                router.StoreRegion = ds.Tables[0].Rows[i]["storeRegion"].ToString();
+                router.StoreType = ds.Tables[0].Rows[i]["storeType"].ToString();
+                string routerIP = ds.Tables[0].Rows[i]["routerIP"].ToString();
+                string message = null;
+                try
+                {                    
+                    router.RouterNetwork = (new Ping().Send(routerIP).Status == IPStatus.Success) ? "Up" : "Down";
+                }
+                catch (System.Exception ex)
+                {
+                    router.RouterNetwork = "Down";
+                    message = ex.Message;
+                }
+                finally
+                {
+                    router.Date = DateTime.Now.ToString();
+                    RouterList.Add(router);
+                    Console.WriteLine((i + 1).ToString() + "/" + count.ToString() + " " + router.StoreNo + ": " + (message ?? router.RouterNetwork) );
+                }
+            }
+            string[] clist = { "storeNo", "storeRegion", "storeType", "routerNetwork", "routerType", "date" };
+            DataTable dt = new DataTable();
+            foreach (string colName in clist)
+            {
+                dt.Columns.Add(colName);
+            }
+            int rowCount = RouterList.Count;
+            for (int i = 0; i < rowCount; i++)
+            {
+                DataRow row = dt.NewRow();
+                row["storeNo"] = RouterList[i].StoreNo;
+                row["storeRegion"] = RouterList[i].StoreRegion;
+                row["storeType"] = RouterList[i].StoreType;
+                row["routerNetwork"] = RouterList[i].RouterNetwork;
+                row["routerType"] = RouterList[i].RouterType;
+                row["date"] = RouterList[i].Date;
+                dt.Rows.Add(row);
+            }
+            SqlHelper.CommonBulkInsert(dt, "RouterInformationTemp"); // 插入到Temp表中用做对比
+            sw.Stop();
+            double ms = sw.ElapsedMilliseconds / 1000.0;
+            Console.WriteLine("耗时: " + ms.ToString());
+        }
 
         #endregion
     }

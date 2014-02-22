@@ -25,18 +25,23 @@ namespace IMonitorAssist
                         break;
                     case "ROUTER":
                         {
+                            SqlHelper.DeleteRouterInformationTemp();
                             Common.DoGetRouterInformationTask();
+                            Console.WriteLine("Thread sleep 60s...");
+                            Thread.Sleep(60 * 1000);
+                            Common.DoGetRouterInformationTask();
+                            SqlHelper.InsertRouterInformation();
                         }
                         break;
                 }
             }
             else
             {
-                //SqlHelper.DeleteRouterInformation();
-                //Common.DoGetRouterInformationTask();
-                //Console.WriteLine("Thread sleep 60s...");
-                //Thread.Sleep(60 * 1000);
-                //Common.DoGetRouterInformationTask();
+                SqlHelper.DeleteRouterInformationTemp();
+                Common.DoGetRouterInformationTask();
+                Console.WriteLine("Thread sleep 60s...");
+                Thread.Sleep(60 * 1000);
+                Common.DoGetRouterInformationTask();
                 SqlHelper.InsertRouterInformation();
             }
              

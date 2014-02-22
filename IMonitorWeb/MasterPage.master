@@ -44,7 +44,7 @@
                   <li id="mfacility"><a href="#fakelink">门店设备</a>
                         <ul>
                           <!-- Sub Menu items go here -->
-                          <li id="mrouter"><a href="#fakelink">路由器</a></li>
+                          <li id="mrouter"><a href="/Facility/Router.aspx">路由器</a></li>
                           <li id="mprint"><a href="/Facility/Printer.aspx">打印机</a></li>                           
                           <li id="mlaptop"><a href="#fakelink">笔记本</a></li>
                           <li id="mfinger"><a href="#fakelink">指纹机</a></li>
@@ -63,10 +63,11 @@
         </div>
     </div>    
     <div class="container-fluid">
-        <div class="alert alert-success" style="display:none;" id="alertbar"></div>
-        <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
+      <div class="alert alert-success" style="display: none;" id="alertbar"></div>
+      <div class="alert alert-warning" style="display: none;" id="message"></div>
+      <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
         
-        </asp:ContentPlaceHolder>
+      </asp:ContentPlaceHolder>
     </div>
     <!-- Load JS here for greater good =============================--> 
     <script src="/contents/js/jquery.ui.touch-punch.min.js"></script>

@@ -330,12 +330,24 @@ namespace IMonitorService.Code
 
         #region RouterInformation
 
-        public static DataSet GetRouter()
+        public static DataSet GetRouterInformation(RouterCondition rc)
         {
             DataSet ds = new DataSet();
+            string sql = string.Empty;
             using (SqlConnection conn = new SqlConnection(connLocal))
             {
-                string sql = "select * from dbo.RouterInformation order by storeNo;";
+                switch (rc)
+                {
+                    case RouterCondition.All:
+                        sql = "select * from dbo.RouterInformation where convert(nvarchar(10),date,127)=convert(nvarchar(10),GETDATE(),127) order by routerNetwork, storeNo;";
+                        break;
+                    case RouterCondition.Up:
+                        sql = "select * from dbo.RouterInformation where routerNetwork='Up' and convert(nvarchar(10),date,127)=convert(nvarchar(10),GETDATE(),127) order by storeNo;";
+                        break;
+                    case RouterCondition.Down:
+                        sql = "select * from dbo.RouterInformation where routerNetwork='Down' and convert(nvarchar(10),date,127)=convert(nvarchar(10),GETDATE(),127) order by storeNo;";
+                        break;
+                }                
                 SqlDataAdapter da = new SqlDataAdapter();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 da.SelectCommand = cmd;
@@ -355,7 +367,7 @@ namespace IMonitorService.Code
                 switch (rc)
                 {
                     case RouterCondition.All:
-                        sql = "select COUNT(*) / 2 total from dbo.RouterInformation";
+                        sql = "select COUNT(*) total from dbo.RouterInformation";
                         break;
                     case RouterCondition.Up:
                         sql = "select COUNT(*) total from dbo.RouterInformation where routerNetwork='Up'";
@@ -374,11 +386,11 @@ namespace IMonitorService.Code
             return Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString());
         }
 
-        public static void DeleteRouterInformation()
+        public static void DeleteRouterInformationTemp()
         {
             using (SqlConnection conn = new SqlConnection(connLocal))
             {
-                string sql = "truncate table dbo.Router";
+                string sql = "truncate table dbo.RouterInformationTemp";
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     conn.Open();
@@ -399,6 +411,7 @@ namespace IMonitorService.Code
                 conn.Close();
             }
         }
+
         #endregion
 
         #region LaptopInformation

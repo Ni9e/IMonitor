@@ -3,8 +3,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
   <title>打印机</title>
 </asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
-  <div class="alert alert-warning" style="display: none;" id="message"></div>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">  
   <div class="row">
     <div class="col-md-12 div-center">
       <table id="tbUP"></table>
@@ -22,6 +21,7 @@
         count = 0; // 缺墨门店统计
 
     $('#mfacility').addClass('active');
+    $('#mprint').addClass('active');
     $('#mgetprint').show();
 
     function currentNum(str) {

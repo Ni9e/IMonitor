@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Data;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
+using System.Management;
 
 namespace IMonitorService.Code
 {
@@ -18,8 +19,11 @@ namespace IMonitorService.Code
         public static int count = 0; // 打印机抓取完成计数
         public static List<PrinterInformation> PrinterList { get; set; }
         public static List<RouterInformation> RouterList { get; set; }
+        public static List<LaptopInformation> LaptopList { get; set; }
         const int defaultTimeout = 10 * 1000; // 打印机抓取超时，10秒
-        public static int storeCount = 0; // 店铺数量
+        private static int storeCount = 0; // 店铺数量
+        private static int[] laptopComplete; // 笔记本完成Ping的数量
+        private static int[] routerComplete; // 路由器完成Ping的数量
         
         public static StoreHost GetStoreHost(string storeNo)
         {
@@ -28,12 +32,23 @@ namespace IMonitorService.Code
             host.Url = url + ".100";
             host.PrinterIP = host.Url.Substring(7);
             host.RouterIP = (url + ".1").Substring(7);
-            host.LaptopIP1 = (url + ".40").Substring(7);
-            host.LaptopIP2 = (url + ".50").Substring(7);
+            host.LaptopIP1 = (url + ".40").Substring(7) + ";" + (url + ".41").Substring(7);
+            host.LaptopIP2 = (url + ".50").Substring(7) + ";" + (url + ".51").Substring(7);
             host.FingerIP = "";
             host.FlowIP = "";
             
             return host;
+        }
+
+        public static int GetArraySum(int[] arr)
+        {
+            int sum = 0;
+            int count = arr.Length;
+            for (int i = 0; i < count; i++)
+            {
+                sum += arr[i];
+            }
+            return sum;
         }
         
         #region 打印机信息抓取
@@ -318,56 +333,204 @@ namespace IMonitorService.Code
             RouterList = new List<RouterInformation>();
             DataSet ds = SqlHelper.GetStoreInformation();
             int count = ds.Tables[0].Rows.Count;
+            routerComplete = new int[count];
             Stopwatch sw = new Stopwatch();
             sw.Start();
+            for (int i = 0; i < count; i++)
+            {
+                routerComplete[i] = 0;
+            }
             for (int i = 0; i < count; i++)
             {
                 RouterInformation router = new RouterInformation();
                 router.StoreNo = ds.Tables[0].Rows[i]["storeNo"].ToString();
                 router.StoreRegion = ds.Tables[0].Rows[i]["storeRegion"].ToString();
                 router.StoreType = ds.Tables[0].Rows[i]["storeType"].ToString();
-                string routerIP = ds.Tables[0].Rows[i]["routerIP"].ToString();
-                string message = null;
-                try
-                {                    
-                    router.RouterNetwork = (new Ping().Send(routerIP).Status == IPStatus.Success) ? "Up" : "Down";
-                }
-                catch (System.Exception ex)
-                {
-                    router.RouterNetwork = "Down";
-                    message = ex.Message;
-                }
-                finally
-                {
-                    router.Date = DateTime.Now.ToString();
-                    RouterList.Add(router);
-                    Console.WriteLine((i + 1).ToString() + "/" + count.ToString() + " " + router.StoreNo + ": " + (message ?? router.RouterNetwork) );
-                }
+                router.IP = ds.Tables[0].Rows[i]["routerIP"].ToString();
+                router.I = i;
+                router.Total = count;
+                RouterAssist(router);                
             }
-            string[] clist = { "storeNo", "storeRegion", "storeType", "routerNetwork", "routerType", "date" };
-            DataTable dt = new DataTable();
-            foreach (string colName in clist)
+            while (true)
             {
-                dt.Columns.Add(colName);
-            }
-            int rowCount = RouterList.Count;
-            for (int i = 0; i < rowCount; i++)
-            {
-                DataRow row = dt.NewRow();
-                row["storeNo"] = RouterList[i].StoreNo;
-                row["storeRegion"] = RouterList[i].StoreRegion;
-                row["storeType"] = RouterList[i].StoreType;
-                row["routerNetwork"] = RouterList[i].RouterNetwork;
-                row["routerType"] = RouterList[i].RouterType;
-                row["date"] = RouterList[i].Date;
-                dt.Rows.Add(row);
-            }
-            SqlHelper.CommonBulkInsert(dt, "RouterInformationTemp"); // 插入到Temp表中用做对比
-            sw.Stop();
-            double ms = sw.ElapsedMilliseconds / 1000.0;
-            Console.WriteLine("耗时: " + ms.ToString());
+                if(count == GetArraySum(routerComplete))
+                {
+                    string[] clist = { "storeNo", "storeRegion", "storeType", "routerNetwork", "routerType", "date" };
+                    DataTable dt = new DataTable();
+                    foreach (string colName in clist)
+                    {
+                        dt.Columns.Add(colName);
+                    }
+                    int rowCount = RouterList.Count;
+                    for (int i = 0; i < rowCount; i++)
+                    {
+                        DataRow row = dt.NewRow();
+                        row["storeNo"] = RouterList[i].StoreNo;
+                        row["storeRegion"] = RouterList[i].StoreRegion;
+                        row["storeType"] = RouterList[i].StoreType;
+                        row["routerNetwork"] = RouterList[i].RouterNetwork;
+                        row["routerType"] = RouterList[i].RouterType;
+                        row["date"] = RouterList[i].Date;
+                        dt.Rows.Add(row);
+                    }
+                    SqlHelper.CommonBulkInsert(dt, "RouterInformationTemp"); // 插入到Temp表中用做对比
+                    sw.Stop();
+                    double ms = sw.ElapsedMilliseconds / 1000.0;
+                    Console.WriteLine("耗时: " + ms.ToString());
+                    break;
+                }
+            }            
         }
 
+        private static void RouterAssist(RouterInformation router)
+        {
+            Ping p = new Ping();
+            p.PingCompleted += RouterCallback;
+            p.SendAsync(router.IP, 5 * 1000, router);
+        }
+
+        private static void RouterCallback(object sender, PingCompletedEventArgs e)
+        {
+            RouterInformation router = (RouterInformation)e.UserState;
+            router.RouterNetwork = (e.Reply.Status == IPStatus.Success) ? "Up" : "Down";
+            router.Date = DateTime.Now.ToString();
+            RouterList.Add(router);
+            routerComplete[router.I] = 1; // 相应位置1表示已经Ping完            
+            Console.WriteLine((router.I + 1).ToString() + "/" + router.Total.ToString() + " " + router.StoreNo + ": " + router.RouterNetwork);
+            
+        }
+
+        #endregion
+
+        #region 笔记本信息抓取
+
+        public static void DoGetLaptopInformationTask()
+        {
+            LaptopList = new List<LaptopInformation>();
+            DataSet ds = SqlHelper.GetStoreInformation();
+            int count = ds.Tables[0].Rows.Count;
+            laptopComplete = new int[count];
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            for (int i = 0; i < count; i++)
+            {
+                laptopComplete[i] = 0;
+            }
+            for (int i = 0; i < count; i++)
+            {
+                LaptopInformation laptop = new LaptopInformation();
+                laptop.StoreNo = ds.Tables[0].Rows[i]["storeNo"].ToString();
+                laptop.StoreRegion = ds.Tables[0].Rows[i]["storeRegion"].ToString();
+                laptop.StoreType = ds.Tables[0].Rows[i]["storeType"].ToString();
+                laptop.I = i;
+                laptop.Total = count;
+                laptop.Count = 0;
+
+                string[] ip1 = ds.Tables[0].Rows[i]["laptopIP1"].ToString().Split(';');
+                for (int j = 0; j < ip1.Length; j++ )
+                {
+                    laptop.IPs.Add(ip1[j]);
+                }
+
+                string[] ip2 = ds.Tables[0].Rows[i]["laptopIP2"].ToString().Split(';');
+                for (int k = 0; k < ip2.Length; k++ )
+                {
+                    laptop.IPs.Add(ip2[k]);
+                }
+
+                laptop.LaptopNetwork = string.Empty;
+                PingAssist(laptop, laptop.Count); 
+            }
+            while (true)
+            {
+                if( count == GetArraySum(laptopComplete))
+                {
+                    string[] clist = { "storeNo", "storeRegion", "storeType", "laptopNetwork", "printerService", "date" };
+                    DataTable dt = new DataTable();
+                    foreach (string colName in clist)
+                    {
+                        dt.Columns.Add(colName);
+                    }
+                    int rowCount = LaptopList.Count;
+                    for (int i = 0; i < rowCount; i++)
+                    {
+                        DataRow row = dt.NewRow();
+                        row["storeNo"] = LaptopList[i].StoreNo;
+                        row["storeRegion"] = LaptopList[i].StoreRegion;
+                        row["storeType"] = LaptopList[i].StoreType;
+                        row["laptopNetwork"] = LaptopList[i].LaptopNetwork;
+                        row["printerService"] = LaptopList[i].PrinterService;
+                        row["date"] = LaptopList[i].Date;
+                        dt.Rows.Add(row);
+                    }
+                    SqlHelper.DeleteLaptopInformation();
+                    SqlHelper.CommonBulkInsert(dt, "LaptopInformation");
+                    sw.Stop();
+                    double ms = sw.ElapsedMilliseconds / 1000.0;
+                    Console.WriteLine("耗时: " + ms.ToString());
+                    break;
+                }
+            }            
+        }
+
+        private static void PingAssist(LaptopInformation laptop, int i)
+        {
+            Ping p = new Ping();            
+            p.PingCompleted += PingCallback;
+            p.SendAsync(laptop.IPs[i], 5 * 1000, laptop);          
+        }
+
+        private static void PingCallback(object sender, PingCompletedEventArgs e)
+        {            
+            LaptopInformation laptop = (LaptopInformation)e.UserState;
+            laptop.LaptopNetwork = (e.Reply.Status == IPStatus.Success) ? "Up" : "Down";
+            laptop.Count++;
+            if(laptop.LaptopNetwork == "Down" && laptop.Count != laptop.IPs.Count)
+            {
+                PingAssist(laptop, laptop.Count);
+            }
+            else
+            {
+                // 获取打印机服务 待添加
+                laptop.Date = DateTime.Now.ToString();                
+                LaptopList.Add(laptop);
+                laptopComplete[laptop.I] = 1; // 置1表示该打印机已经Ping完
+                Console.WriteLine((laptop.I + 1).ToString() + "/" + laptop.Total.ToString() + " " + laptop.StoreNo + ": " + laptop.LaptopNetwork);                 
+            }                      
+        }
+
+        public static void GetPrinterService()
+        {
+            // WMI获取服务状态
+            ConnectionOptions con = new ConnectionOptions();
+            con.Username = "";
+            con.Password = "123456";
+            ManagementScope ms = new ManagementScope(@"\\.\root\cimv2", null);
+            ObjectQuery oq = new ObjectQuery("SELECT * FROM Win32_Service");
+            ManagementObjectSearcher query1 = new ManagementObjectSearcher(ms, oq);
+            ManagementObjectCollection queryCollection1 = query1.Get();
+            foreach (ManagementObject mo in queryCollection1)
+            {
+                Console.WriteLine("{0} started is {1}, mode is {2}", mo["Name"].ToString(), mo["Started"].ToString(), mo["StartMode"].ToString());
+            }
+
+            ////连接远程计算机  
+            //ConnectionOptions co = new ConnectionOptions();
+            //co.Username = "john";
+            //co.Password = "john";
+            //ManagementScope ms = new ManagementScope("\\\\192.168.1.2\\root\\cimv2", co);
+            ////查询远程计算机  
+            //ObjectQuery oq = new System.Management.ObjectQuery("SELECT * FROM Win32_Service");
+
+            //ManagementObjectSearcher query1 = new ManagementObjectSearcher(ms, oq);
+            //ManagementObjectCollection queryCollection1 = query1.Get();
+            //foreach (ManagementObject mo in queryCollection1)
+            //{
+            //    string[] ss = { "" };
+            //    mo.InvokeMethod("Reboot", ss);
+            //    Console.WriteLine(mo.ToString());
+            //}  
+        }
         #endregion
     }
 }

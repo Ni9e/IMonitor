@@ -41,12 +41,13 @@
                   <!-- Menu items go here -->
                   <li id="mindex"><a href="#fakelink">首页</a></li>
                   <li id="mstores"><a href="/Store/StoreInformation.aspx">门店维护</a></li>
+                  <li id="mconfig"><a href="#fakelink">策略配置</a></li>
                   <li id="mfacility"><a href="#fakelink">门店设备</a>
                         <ul>
                           <!-- Sub Menu items go here -->
                           <li id="mrouter"><a href="/Facility/Router.aspx">路由器</a></li>
                           <li id="mprint"><a href="/Facility/Printer.aspx">打印机</a></li>                           
-                          <li id="mlaptop"><a href="#fakelink">笔记本</a></li>
+                          <li id="mlaptop"><a href="/Facility/Laptop.aspx">笔记本</a></li>
                           <li id="mfinger"><a href="#fakelink">指纹机</a></li>
                           <li id="mflow"><a href="#fakelink">人流机</a></li>
                         </ul>

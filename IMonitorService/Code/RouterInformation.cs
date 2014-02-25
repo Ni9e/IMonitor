@@ -13,5 +13,10 @@ namespace IMonitorService.Code
         public string RouterNetwork { get; set; }
         public string RouterType { get; set; }
         public string Date { get; set; }
+
+        // 辅助属性
+        public string IP { get; set; }
+        public int I { get; set; }
+        public int Total { get; set; }
     }
 }

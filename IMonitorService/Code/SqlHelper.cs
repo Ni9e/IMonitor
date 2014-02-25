@@ -422,7 +422,7 @@ namespace IMonitorService.Code
             string sql = string.Empty;
             using (SqlConnection conn = new SqlConnection(connLocal))
             {
-                sql = "select * from dbo.LaptopInformation;";
+                sql = "select * from dbo.LaptopInformation order by laptopNetwork, storeNo;";
                 SqlDataAdapter da = new SqlDataAdapter();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 da.SelectCommand = cmd;
@@ -431,6 +431,20 @@ namespace IMonitorService.Code
                 conn.Close();
             }
             return ds;
+        }
+
+        public static void DeleteLaptopInformation()
+        {
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                string sql = "truncate table dbo.LaptopInformation";
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
         }
 
         #endregion

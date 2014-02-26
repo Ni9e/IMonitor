@@ -422,7 +422,7 @@ namespace IMonitorService.Code
             string sql = string.Empty;
             using (SqlConnection conn = new SqlConnection(connLocal))
             {
-                sql = "select * from dbo.LaptopInformation order by laptopNetwork, storeNo;";
+                sql = "select * from dbo.LaptopInformation where convert(nvarchar(10),date,127) = convert(nvarchar(10),GETDATE(),127) order by laptopNetwork, storeNo;";
                 SqlDataAdapter da = new SqlDataAdapter();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 da.SelectCommand = cmd;

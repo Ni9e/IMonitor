@@ -42,14 +42,13 @@ namespace IMonitorAssist
             }
             else
             {
-                //SqlHelper.DeleteRouterInformationTemp();
-                //Common.DoGetRouterInformationTask();
-                //Console.WriteLine("Thread sleep 60s...");
-                //Thread.Sleep(60 * 1000);
-                //Common.DoGetRouterInformationTask();
-                //SqlHelper.InsertRouterInformation();
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                Common.GetPrinterService();
+                sw.Stop();
+                double s = sw.ElapsedMilliseconds / 1000;
+                Console.WriteLine(s.ToString());
 
-                Common.DoGetLaptopInformationTask();
             }
              
         }        

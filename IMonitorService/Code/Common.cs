@@ -439,7 +439,7 @@ namespace IMonitorService.Code
                 }
 
                 laptop.LaptopNetwork = string.Empty;
-                PingAssist(laptop, laptop.Count); 
+                LaptopAssist(laptop, laptop.Count); 
             }
             while (true)
             {
@@ -473,25 +473,26 @@ namespace IMonitorService.Code
             }            
         }
 
-        private static void PingAssist(LaptopInformation laptop, int i)
+        private static void LaptopAssist(LaptopInformation laptop, int i)
         {
             Ping p = new Ping();            
-            p.PingCompleted += PingCallback;
+            p.PingCompleted += LaptopCallback;
             p.SendAsync(laptop.IPs[i], 5 * 1000, laptop);          
         }
 
-        private static void PingCallback(object sender, PingCompletedEventArgs e)
+        private static void LaptopCallback(object sender, PingCompletedEventArgs e)
         {            
             LaptopInformation laptop = (LaptopInformation)e.UserState;
             laptop.LaptopNetwork = (e.Reply.Status == IPStatus.Success) ? "Up" : "Down";
             laptop.Count++;
             if(laptop.LaptopNetwork == "Down" && laptop.Count != laptop.IPs.Count)
             {
-                PingAssist(laptop, laptop.Count);
+                LaptopAssist(laptop, laptop.Count);
             }
             else
             {
                 // 获取打印机服务 待添加
+                laptop.PrinterService = GetPrinterService(laptop);
                 laptop.Date = DateTime.Now.ToString();                
                 LaptopList.Add(laptop);
                 laptopComplete[laptop.I] = 1; // 置1表示该打印机已经Ping完
@@ -500,36 +501,49 @@ namespace IMonitorService.Code
         }
 
         public static void GetPrinterService()
-        {
-            // WMI获取服务状态
-            ConnectionOptions con = new ConnectionOptions();
-            con.Username = "";
-            con.Password = "123456";
-            ManagementScope ms = new ManagementScope(@"\\.\root\cimv2", null);
+        {            
+            //连接远程计算机  
+            ConnectionOptions co = new ConnectionOptions();
+            co.Username = ".\\store";
+            co.Password = "20122012";
+            
+            ManagementScope ms = new ManagementScope("\\\\10.164.30.50\\root\\cimv2", co);
+            //查询远程计算机  
             ObjectQuery oq = new ObjectQuery("SELECT * FROM Win32_Service");
             ManagementObjectSearcher query1 = new ManagementObjectSearcher(ms, oq);
             ManagementObjectCollection queryCollection1 = query1.Get();
             foreach (ManagementObject mo in queryCollection1)
             {
-                Console.WriteLine("{0} started is {1}, mode is {2}", mo["Name"].ToString(), mo["Started"].ToString(), mo["StartMode"].ToString());
+                if (Convert.ToString(mo["Name"]) == "Spooler")
+                {
+                    Console.WriteLine((mo["Started"].ToString() == "True") ? "打印机服务已启动" : "打印机服务未启动");
+                }
             }
+        }
 
-            ////连接远程计算机  
-            //ConnectionOptions co = new ConnectionOptions();
-            //co.Username = "john";
-            //co.Password = "john";
-            //ManagementScope ms = new ManagementScope("\\\\192.168.1.2\\root\\cimv2", co);
-            ////查询远程计算机  
-            //ObjectQuery oq = new System.Management.ObjectQuery("SELECT * FROM Win32_Service");
-
-            //ManagementObjectSearcher query1 = new ManagementObjectSearcher(ms, oq);
-            //ManagementObjectCollection queryCollection1 = query1.Get();
-            //foreach (ManagementObject mo in queryCollection1)
-            //{
-            //    string[] ss = { "" };
-            //    mo.InvokeMethod("Reboot", ss);
-            //    Console.WriteLine(mo.ToString());
-            //}  
+        public static string GetPrinterService(LaptopInformation laptop)
+        {
+            string result = string.Empty;
+            if (laptop.StoreType == "IFocus")
+            {
+                //连接远程计算机  
+                ConnectionOptions co = new ConnectionOptions();
+                co.Username = ".\\store";
+                co.Password = "20122012";
+                ManagementScope ms = new ManagementScope("\\\\" + laptop.IPs[laptop.Count - 1] + "\\root\\cimv2", co);
+                //查询远程计算机  
+                ObjectQuery oq = new ObjectQuery("SELECT * FROM Win32_Service");
+                ManagementObjectSearcher query1 = new ManagementObjectSearcher(ms, oq);
+                ManagementObjectCollection queryCollection1 = query1.Get();
+                foreach (ManagementObject mo in queryCollection1)
+                {
+                    if (Convert.ToString(mo["Name"]) == "Spooler")
+                    {
+                        result = (mo["Started"].ToString() == "True") ? "打印机服务已启动" : "打印机服务未启动";
+                    }
+                }
+            }            
+            return result;
         }
         #endregion
     }

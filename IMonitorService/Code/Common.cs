@@ -17,6 +17,8 @@ namespace IMonitorService.Code
     public class Common
     {
         public static int count = 0; // 打印机抓取完成计数
+        public static int indexCount = 0;
+        public static int indexlapCount = 0;
         public static List<PrinterInformation> PrinterList { get; set; }
         public static List<RouterInformation> RouterList { get; set; }
         public static List<LaptopInformation> LaptopList { get; set; }
@@ -34,8 +36,8 @@ namespace IMonitorService.Code
             host.RouterIP = (url + ".1").Substring(7);
             host.LaptopIP1 = (url + ".40").Substring(7) + ";" + (url + ".41").Substring(7);
             host.LaptopIP2 = (url + ".50").Substring(7) + ";" + (url + ".51").Substring(7);
-            host.FingerIP = "";
-            host.FlowIP = "";
+            host.FingerIP = (url + ".140").Substring(7);
+            host.FlowIP = (url + ".120").Substring(7);
             
             return host;
         }
@@ -49,6 +51,63 @@ namespace IMonitorService.Code
                 sum += arr[i];
             }
             return sum;
+        }
+
+        public static IndexQuery GetIndexData(string storeNo)
+        {
+            IndexQuery iq = new IndexQuery();
+            DataSet ds = SqlHelper.GetStoreInformation(storeNo);
+            iq.StoreNo = ds.Tables[0].Rows[0]["storeNo"].ToString();
+            iq.StoreRegion = ds.Tables[0].Rows[0]["storeRegion"].ToString();
+            iq.StoreType = ds.Tables[0].Rows[0]["storeType"].ToString();
+            iq.PrinterType = ds.Tables[0].Rows[0]["printerType"].ToString();
+            iq.TonerType = ds.Tables[0].Rows[0]["tonerType"].ToString();
+            iq.RouterIP = ds.Tables[0].Rows[0]["routerIP"].ToString();
+            iq.PrinterIP = ds.Tables[0].Rows[0]["printerIP"].ToString();
+            string[] ip1 = ds.Tables[0].Rows[0]["laptopIP1"].ToString().Split(';');
+            for (int j = 0; j < ip1.Length; j++)
+            {
+                iq.IPs.Add(ip1[j]);
+            }
+
+            string[] ip2 = ds.Tables[0].Rows[0]["laptopIP2"].ToString().Split(';');
+            for (int k = 0; k < ip2.Length; k++)
+            {
+                iq.IPs.Add(ip2[k]);
+            }
+            iq.Count = 0;
+
+            try
+            {
+                if (new Ping().Send(iq.RouterIP).Status == IPStatus.Success)
+                {
+                    iq.RouterNetwork = "Up";
+                    SetPrinterInformation(iq);
+                    SetLaptopInformation(iq);
+                    // 获取打印机服务待添加
+                }
+                else
+                {
+                    iq.RouterNetwork = "Down";
+                    iq.PrinterNetwork = "Down";
+                    iq.PrinterStatus = "";
+                    iq.TonerStatus = "";
+                    iq.LaptopIP = "";
+                    iq.LaptopNetwork = "Down";
+                    iq.PrinterService = "";
+                }
+            }
+            catch (System.Exception ex)
+            {
+                iq.RouterNetwork = "Down";
+                iq.PrinterNetwork = "Down";
+                iq.PrinterStatus = "";
+                iq.TonerStatus = "";
+                iq.LaptopIP = "";
+                iq.LaptopNetwork = "Down";
+                iq.PrinterService = "";
+            }
+            return iq;
         }
         
         #region 打印机信息抓取
@@ -186,7 +245,7 @@ namespace IMonitorService.Code
                 printer.PrinterNetwork = "Down";
             }
         }
-
+        
         private static void BeginResponse(RequestState state)
         {
             HttpWebRequest request = WebRequest.Create(state.Host.Url) as HttpWebRequest;
@@ -220,22 +279,36 @@ namespace IMonitorService.Code
                     state.Printer.TonerStatus = tstatus;
                     if (pstatus.IndexOf("StartIndex") == -1)
                     {
-                        count++;
-                        PrinterList.Add(state.Printer);
-                        Console.WriteLine(count.ToString() + "/" + storeCount.ToString() + " " + state.Printer.StoreNo + ": " + state.Printer.PrinterStatus + " " + state.Printer.TonerStatus);
+                        if (state.IsIndexQuery)
+                        {
+                            indexCount++;
+                        }
+                        else
+                        {
+                            count++;
+                            PrinterList.Add(state.Printer);
+                            Console.WriteLine(count.ToString() + "/" + storeCount.ToString() + " " + state.Printer.StoreNo + ": " + state.Printer.PrinterStatus + " " + state.Printer.TonerStatus);
+                        }
                     }
                 }
                 response.Close();
             }
             catch (System.Exception ex)
             {
-                count++;
                 state.Printer.PrinterStatus = ex.Message;
                 state.Printer.TonerStatus = ex.Message;
                 state.Printer.PrinterNetwork = "Down";
                 state.Printer.Date = DateTime.Now.ToString();
-                PrinterList.Add(state.Printer);
-                Console.WriteLine(count.ToString() + "/" + storeCount.ToString() + " " + state.Printer.StoreNo + ": " + ex.Message.ToString());
+                if (state.IsIndexQuery)
+                {
+                    indexCount++;
+                }
+                else
+                {
+                    count++;                    
+                    PrinterList.Add(state.Printer);
+                    Console.WriteLine(count.ToString() + "/" + storeCount.ToString() + " " + state.Printer.StoreNo + ": " + ex.Message.ToString());
+                }                  
             }
         }
 
@@ -258,7 +331,7 @@ namespace IMonitorService.Code
 
                 state.Host = Common.GetStoreHost(printer.StoreNo);
                 state.Host.PrinterIP = ds.Tables[0].Rows[i]["printerIP"].ToString(); // IP设置为门店维护的IP                
-
+                state.IsIndexQuery = false;
                 state.Printer = printer;
                 try
                 {
@@ -323,7 +396,60 @@ namespace IMonitorService.Code
                 }
             }
         }
-        
+
+        public static void SetPrinterInformation(IndexQuery iq)
+        {
+            RequestState state = new RequestState();
+            PrinterInformation printer = new PrinterInformation();
+            printer.StoreNo = iq.StoreNo;
+            printer.StoreRegion = iq.StoreRegion;
+            printer.StoreType = iq.StoreType;
+            printer.PrinterType = iq.PrinterType;
+            printer.TonerType = iq.TonerType;
+
+            state.Host = Common.GetStoreHost(iq.StoreNo);
+            state.Host.PrinterIP = iq.PrinterIP;
+            state.Printer = printer;
+            state.IsIndexQuery = true;
+            try
+            {
+                if (new Ping().Send(state.Host.PrinterIP).Status == IPStatus.Success)
+                {
+                    BeginResponse(state);
+                }
+                else
+                {
+                    indexCount++;
+                    state.Printer.PrinterStatus = "打印机无法连接";
+                    state.Printer.TonerStatus = "打印机无法连接";
+                    state.Printer.PrinterNetwork = "Down";
+                    state.Printer.Date = DateTime.Now.ToString();                    
+                    Console.WriteLine(count.ToString() + "/" + storeCount.ToString() + " " + state.Printer.StoreNo + ": 打印机无法连接");
+                }
+            }
+            catch (System.Exception ex)
+            {
+                indexCount++;
+                state.Printer.PrinterStatus = ex.Message;
+                state.Printer.TonerStatus = ex.Message;
+                state.Printer.PrinterNetwork = "Down";
+                state.Printer.Date = DateTime.Now.ToString();                
+                Console.WriteLine(count.ToString() + "/" + storeCount.ToString() + " " + state.Printer.StoreNo + ": " + ex.Message.ToString());
+            }
+
+            while (true)
+            {
+                if (indexCount == 1)
+                {
+                    iq.PrinterNetwork = state.Printer.PrinterNetwork;
+                    iq.PrinterStatus = state.Printer.PrinterStatus;
+                    iq.TonerStatus = state.Printer.TonerStatus;
+                    break;
+                }
+            }
+
+        }
+
         #endregion
 
         #region 路由器信息抓取
@@ -425,6 +551,7 @@ namespace IMonitorService.Code
                 laptop.I = i;
                 laptop.Total = count;
                 laptop.Count = 0;
+                laptop.IsIndexQuery = false;
 
                 string[] ip1 = ds.Tables[0].Rows[i]["laptopIP1"].ToString().Split(';');
                 for (int j = 0; j < ip1.Length; j++ )
@@ -445,7 +572,7 @@ namespace IMonitorService.Code
             {
                 if( count == GetArraySum(laptopComplete))
                 {
-                    string[] clist = { "storeNo", "storeRegion", "storeType", "laptopNetwork", "printerService", "date" };
+                    string[] clist = { "storeNo", "storeRegion", "storeType", "laptopNetwork", "ip", "printerService", "date" };
                     DataTable dt = new DataTable();
                     foreach (string colName in clist)
                     {
@@ -459,6 +586,7 @@ namespace IMonitorService.Code
                         row["storeRegion"] = LaptopList[i].StoreRegion;
                         row["storeType"] = LaptopList[i].StoreType;
                         row["laptopNetwork"] = LaptopList[i].LaptopNetwork;
+                        row["ip"] = LaptopList[i].IP;
                         row["printerService"] = LaptopList[i].PrinterService;
                         row["date"] = LaptopList[i].Date;
                         dt.Rows.Add(row);
@@ -491,23 +619,30 @@ namespace IMonitorService.Code
             }
             else
             {
-                // 获取打印机服务 待添加
-                laptop.PrinterService = GetPrinterService(laptop);
-                laptop.Date = DateTime.Now.ToString();                
-                LaptopList.Add(laptop);
-                laptopComplete[laptop.I] = 1; // 置1表示该打印机已经Ping完
-                Console.WriteLine((laptop.I + 1).ToString() + "/" + laptop.Total.ToString() + " " + laptop.StoreNo + ": " + laptop.LaptopNetwork);                 
+                // 获取打印机服务 待添加                
+                laptop.Date = DateTime.Now.ToString();
+                laptop.IP = laptop.IPs[laptop.Count - 1];                
+                if (!laptop.IsIndexQuery)
+                {
+                    LaptopList.Add(laptop);
+                    laptopComplete[laptop.I] = 1; // 置1表示该打印机已经Ping完
+                    Console.WriteLine((laptop.I + 1).ToString() + "/" + laptop.Total.ToString() + " " + laptop.StoreNo + ": " + laptop.LaptopNetwork);                 
+                }
+                else
+                {
+                    indexlapCount++;
+                }                
             }                      
         }
 
-        public static void GetPrinterService()
+        public static void GetPrinterService(string laptopIP)
         {            
             //连接远程计算机  
             ConnectionOptions co = new ConnectionOptions();
             co.Username = ".\\store";
             co.Password = "20122012";
-            
-            ManagementScope ms = new ManagementScope("\\\\10.164.30.50\\root\\cimv2", co);
+
+            ManagementScope ms = new ManagementScope("\\\\" + laptopIP + "\\root\\cimv2", co);
             //查询远程计算机  
             ObjectQuery oq = new ObjectQuery("SELECT * FROM Win32_Service");
             ManagementObjectSearcher query1 = new ManagementObjectSearcher(ms, oq);
@@ -544,6 +679,29 @@ namespace IMonitorService.Code
                 }
             }            
             return result;
+        }
+
+        public static void SetLaptopInformation(IndexQuery iq)
+        {
+            LaptopInformation laptop = new LaptopInformation();
+            laptop.StoreNo = iq.StoreNo;
+            laptop.StoreRegion = iq.StoreRegion;
+            laptop.StoreType = iq.StoreType;
+            laptop.I = 0;
+            laptop.Total = 1;
+            laptop.Count = 0;
+            laptop.IPs = iq.IPs;
+            laptop.IsIndexQuery = true;
+            LaptopAssist(laptop, laptop.Count);
+            while (true)
+            {
+                if (indexlapCount == 1)
+                {
+                    iq.LaptopNetwork = laptop.LaptopNetwork;
+                    iq.LaptopIP = laptop.IP;
+                    break;
+                }
+            }
         }
         #endregion
     }

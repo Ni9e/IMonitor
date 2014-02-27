@@ -12,5 +12,6 @@ namespace IMonitorService.Code
         public StoreHost Host { get; set; }
         public PrinterInformation Printer { get; set; }
         public PrinterType PrinterType { get; set; }
+        public bool IsIndexQuery { get; set; }
     }
 }

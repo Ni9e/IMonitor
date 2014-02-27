@@ -78,12 +78,38 @@ namespace IMonitorService.Code
                         com.Parameters.AddRange(paras);
                     }
                     con.Open();
-                    rows = com.ExecuteNonQuery();
+                    rows = com.ExecuteNonQuery();                    
                     con.Close();
                 }
             }
             return rows;
-        }        
+        }
+
+        public static DataSet ExecuteDataSet(string spName, SqlParameter[] paras)
+        {
+            DataSet ds = new DataSet();            
+            using (SqlConnection con = new SqlConnection(connLocal))
+            {
+                using (SqlCommand com = new SqlCommand())
+                {
+                    SqlDataAdapter ad = new SqlDataAdapter();
+                    com.Connection = con;
+                    ad.SelectCommand = com;
+                    
+                    com.CommandText = spName;
+                    com.CommandType = CommandType.StoredProcedure;
+                    com.CommandTimeout = 300;                    
+                    if (paras != null)
+                    {
+                        com.Parameters.AddRange(paras);
+                    }                    
+                    con.Open();
+                    ad.Fill(ds);
+                    con.Close();
+                }
+            }
+            return ds;
+        }
 
         #endregion
 
@@ -136,7 +162,7 @@ namespace IMonitorService.Code
                 row["laptopIP2"] = list[i].LaptopIP2;
                 row["fingerIP"] = list[i].FingerIP;
                 row["flowIP"] = list[i].FlowIP;
-                row["emailAddress"] = null;
+                row["emailAddress"] = list[i].StoreNo + "Store@luxottica.com.hk"; // 1525Store@luxottica.com.hk
                 row["printerType"] = null;
                 row["tonerType"] = null;
                 row["routerType"] = null;
@@ -172,6 +198,12 @@ namespace IMonitorService.Code
                 conn.Close();
             }
             return ds;
+        }
+
+        public static DataSet GetStoreInformation(string storeNo)
+        {            
+            SqlParameter[] paras = { new SqlParameter("@storeNo", storeNo) };
+            return SqlHelper.ExecuteDataSet("GetStoreInformation", paras);
         }
 
         public static DataSet GetNonHKStoreInformation()

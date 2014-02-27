@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Code\Common.cs" />
+    <Compile Include="Code\IndexQuery.cs" />
     <Compile Include="Code\LaptopInformation.cs" />
     <Compile Include="Code\Pattern.cs" />
     <Compile Include="Code\Pie.cs" />

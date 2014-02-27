@@ -106,6 +106,7 @@ CREATE TABLE LaptopInformation
 	storeRegion		nvarchar(50),
 	storeType		nvarchar(50),
 	laptopNetwork	nvarchar(50),
+	ip				nvarchar(50),
 	printerService	nvarchar(50),		
 	date			datetime
 )

@@ -33,6 +33,7 @@ public partial class Facility_LaptopJSON : System.Web.UI.Page
                             laptop.StoreRegion = ds.Tables[0].Rows[i]["storeRegion"].ToString();
                             laptop.StoreType = ds.Tables[0].Rows[i]["storeType"].ToString();
                             laptop.LaptopNetwork = ds.Tables[0].Rows[i]["laptopNetwork"].ToString();
+                            laptop.IP = ds.Tables[0].Rows[i]["ip"].ToString();
                             laptop.PrinterService = ds.Tables[0].Rows[i]["printerService"].ToString();
                             laptop.Date = ds.Tables[0].Rows[i]["date"].ToString();
                             list.Add(laptop);

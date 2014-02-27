@@ -33,7 +33,7 @@
     $('#tbLaptop').jqGrid({
       url: '/Facility/LaptopJSON.aspx?status=all',
       datatype: "json",
-      colNames: ["店号", "区域", "店铺类型", "笔记本网络", "打印机服务", "获取日期"],
+      colNames: ["店号", "区域", "店铺类型", "笔记本网络", "笔记本IP", "打印机服务", "获取日期"],
       colModel: [
           {
             name: "StoreNo", index: "StoreNo", width: 140, align: "center", formatter: function (cellvalue, options, rowObject) {
@@ -47,6 +47,7 @@
           { name: "StoreRegion", index: "StoreRegion", width: 150, align: "center" },
           { name: "StoreType", index: "StoreType", width: 150, align: "center" },
           { name: "LaptopNetwork", index: "LaptopNetwork", width: 250, align: "center", cellattr: cellAttr },
+          { name: "IP", index: "IP", width: 100, align:"center" },
           { name: "PrinterService", index: "PrinterService", width: 250, align: "center" },
           { name: "Date", index: "Date", width: 180, align: "center" },
       ],

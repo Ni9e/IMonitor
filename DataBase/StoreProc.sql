@@ -48,3 +48,18 @@ BEGIN
 	DELETE dbo.StoreInformation	WHERE storeNo=@storeNo
 END
 GO
+
+-- =============================================
+-- Author:		<Finkle>
+-- Create date: <2014-01-15>
+-- Description:	<Get StoreInformation>
+-- =============================================
+CREATE PROCEDURE dbo.GetStoreInformation 
+(
+	@storeNo		nvarchar(50)
+)
+AS
+BEGIN
+	select * from dbo.StoreInformation where storeNo=@storeNo
+END
+GO

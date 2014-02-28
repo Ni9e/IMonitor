@@ -42,14 +42,12 @@ namespace IMonitorAssist
             }
             else
             {
-                //Stopwatch sw = new Stopwatch();
-                //sw.Start();
-                //Common.GetPrinterService("10.160.14.50");
-                //sw.Stop();
-                //double s = sw.ElapsedMilliseconds / 1000.0;
-                //Console.WriteLine(s.ToString());
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
 
-                IndexQuery iq = Common.GetIndexData("6028");
+                //Common.GetPrinterService("10.160.14.50");
+
+                IndexQuery iq = Common.GetIndexData("6171");
                 Console.WriteLine("StoreNo: " + iq.StoreNo);
                 Console.WriteLine("Router: " + iq.RouterNetwork);
                 Console.WriteLine("Printer: " + iq.PrinterNetwork);
@@ -58,16 +56,13 @@ namespace IMonitorAssist
                 Console.WriteLine("Laptop: " + iq.LaptopNetwork);
                 Console.WriteLine("LapIP: " + iq.LaptopIP);
 
-                //IndexQuery iq = new IndexQuery();
-                //iq.StoreNo = "6014";
-                //iq.StoreRegion = "BJ";
-                //iq.StoreType = "IFocus";
-                //iq.IPs.Add("10.160.14.40");
-                //iq.IPs.Add("10.160.14.41");
-                //iq.IPs.Add("10.160.14.50");
-                //iq.IPs.Add("10.160.14.51");
-                //Common.SetLaptopInformation(iq);
-                //Console.WriteLine(iq.LaptopNetwork + " " + iq.LaptopIP);
+                //Common.DoGetPrinterInfomationTask();
+                //Common.DoGetRouterInformationTask();
+                //Common.DoGetLaptopInformationTask();
+
+                sw.Stop();
+                double s = sw.ElapsedMilliseconds / 1000.0;
+                Console.WriteLine(s.ToString());
             }
              
         }        

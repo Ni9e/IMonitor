@@ -98,7 +98,7 @@
           //ShowLoading();
           mgetrouter.hide();
           info.fadeToggle(2000);
-          time(50); // 预估每个门店1秒, 后期首页加入
+          time(70); // 预估每个门店1秒, 后期首页加入
         },
         success: function (data, textStatus) {
           clearTimeout(id);

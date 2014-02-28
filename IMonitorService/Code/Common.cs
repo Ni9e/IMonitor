@@ -22,10 +22,11 @@ namespace IMonitorService.Code
         public static List<PrinterInformation> PrinterList { get; set; }
         public static List<RouterInformation> RouterList { get; set; }
         public static List<LaptopInformation> LaptopList { get; set; }
-        const int defaultTimeout = 10 * 1000; // 打印机抓取超时，10秒
+        const int defaultTimeout = 1 * 1000; // 打印机抓取超时，1秒
         private static int storeCount = 0; // 店铺数量
         private static int[] laptopComplete; // 笔记本完成Ping的数量
         private static int[] routerComplete; // 路由器完成Ping的数量
+        private static AutoResetEvent flag = new AutoResetEvent(false);
         
         public static StoreHost GetStoreHost(string storeNo)
         {
@@ -512,7 +513,8 @@ namespace IMonitorService.Code
         {
             Ping p = new Ping();
             p.PingCompleted += RouterCallback;
-            p.SendAsync(router.IP, 5 * 1000, router);
+            p.SendAsync(router.IP, 500, router);
+            flag.WaitOne();
         }
 
         private static void RouterCallback(object sender, PingCompletedEventArgs e)
@@ -523,7 +525,7 @@ namespace IMonitorService.Code
             RouterList.Add(router);
             routerComplete[router.I] = 1; // 相应位置1表示已经Ping完            
             Console.WriteLine((router.I + 1).ToString() + "/" + router.Total.ToString() + " " + router.StoreNo + ": " + router.RouterNetwork);
-            
+            flag.Set();
         }
 
         #endregion
@@ -605,7 +607,8 @@ namespace IMonitorService.Code
         {
             Ping p = new Ping();            
             p.PingCompleted += LaptopCallback;
-            p.SendAsync(laptop.IPs[i], 5 * 1000, laptop);          
+            p.SendAsync(laptop.IPs[i], 1000, laptop);
+            flag.WaitOne();
         }
 
         private static void LaptopCallback(object sender, PingCompletedEventArgs e)
@@ -615,6 +618,7 @@ namespace IMonitorService.Code
             laptop.Count++;
             if(laptop.LaptopNetwork == "Down" && laptop.Count != laptop.IPs.Count)
             {
+                flag.Set();
                 LaptopAssist(laptop, laptop.Count);
             }
             else
@@ -632,7 +636,8 @@ namespace IMonitorService.Code
                 {
                     indexlapCount++;
                 }                
-            }                      
+            }
+            flag.Set();     
         }
 
         public static void GetPrinterService(string laptopIP)

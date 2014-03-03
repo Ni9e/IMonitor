@@ -119,3 +119,21 @@ CREATE TABLE SendEmail
 	date			datetime,
 	tonerCount		int
 )
+
+CREATE TABLE IndexQuery
+(
+	storeNo			nvarchar(50),
+	storeRegion		nvarchar(50),
+	storeType		nvarchar(50),
+	routerIP		nvarchar(50),
+	routerNetwork	nvarchar(50),
+	printerIP		nvarchar(50),
+	printerNetwork	nvarchar(50),
+	printerType		nvarchar(50),
+	tonerType		nvarchar(50),
+	printerStatus	nvarchar(500),
+	tonerStatus		nvarchar(500),
+	laptopNetwork	nvarchar(50),
+	laptopIP		nvarchar(50),
+	printerService	nvarchar(500)
+)

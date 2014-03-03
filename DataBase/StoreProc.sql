@@ -63,3 +63,31 @@ BEGIN
 	select * from dbo.StoreInformation where storeNo=@storeNo
 END
 GO
+
+-- =============================================
+-- Author:		<Finkle>
+-- Create date: <2014-01-15>
+-- Description:	<Insert IndexQuery>
+-- =============================================
+CREATE PROCEDURE [dbo].[InsertIndexQuery] 
+(
+	@storeNo		nvarchar(50),
+	@storeRegion	nvarchar(50),
+	@storeType		nvarchar(50),
+	@routerIP		nvarchar(50),
+	@routerNetwork	nvarchar(50),
+	@printerIP		nvarchar(50),
+	@printerNetwork	nvarchar(50),
+	@printerType	nvarchar(200),
+	@tonerType		nvarchar(100),
+	@printerStatus	nvarchar(500),
+	@tonerStatus	nvarchar(500),
+	@laptopNetwork  nvarchar(50),
+	@laptopIP		nvarchar(50)
+)
+AS
+BEGIN
+	INSERT dbo.IndexQuery 
+	SELECT @storeNo, @storeRegion, @storeType, @routerIP, @routerNetwork, @printerIP, @printerNetwork,
+	       @printerType, @tonerType, @printerStatus, @tonerStatus, @laptopNetwork, @laptopIP, ''
+END

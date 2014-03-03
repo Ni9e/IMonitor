@@ -38,6 +38,14 @@ namespace IMonitorAssist
                             Common.DoGetLaptopInformationTask();
                         }
                         break;
+                    case "INDEXQUERY":
+                        {
+                            string storeNo = args[1].ToString();
+                            IndexQuery iq = Common.GetIndexData(storeNo);
+                            SqlHelper.DeleteIndexQuery();
+                            SqlHelper.InsertIndexQuery(iq);                            
+                        }
+                        break;
                 }
             }
             else
@@ -47,7 +55,9 @@ namespace IMonitorAssist
 
                 //Common.GetPrinterService("10.160.14.50");
 
-                IndexQuery iq = Common.GetIndexData("6171");
+                IndexQuery iq = Common.GetIndexData("6608");
+                SqlHelper.DeleteIndexQuery();
+                SqlHelper.InsertIndexQuery(iq);
                 Console.WriteLine("StoreNo: " + iq.StoreNo);
                 Console.WriteLine("Router: " + iq.RouterNetwork);
                 Console.WriteLine("Printer: " + iq.PrinterNetwork);

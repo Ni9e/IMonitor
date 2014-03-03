@@ -84,8 +84,7 @@ namespace IMonitorService.Code
                 {
                     iq.RouterNetwork = "Up";
                     SetPrinterInformation(iq);
-                    SetLaptopInformation(iq);
-                    // 获取打印机服务待添加
+                    SetLaptopInformation(iq);                    
                 }
                 else
                 {
@@ -100,12 +99,12 @@ namespace IMonitorService.Code
             }
             catch (System.Exception ex)
             {
-                iq.RouterNetwork = "Down";
-                iq.PrinterNetwork = "Down";
-                iq.PrinterStatus = "";
-                iq.TonerStatus = "";
-                iq.LaptopIP = "";
-                iq.LaptopNetwork = "Down";
+                iq.RouterNetwork = string.IsNullOrEmpty(iq.RouterNetwork) ? ex.Message : iq.RouterNetwork;
+                iq.PrinterNetwork = string.IsNullOrEmpty(iq.PrinterNetwork) ? ex.Message : iq.PrinterNetwork;
+                iq.PrinterStatus = string.IsNullOrEmpty(iq.PrinterStatus) ? ex.Message : iq.PrinterStatus;
+                iq.TonerStatus = string.IsNullOrEmpty(iq.TonerStatus) ? ex.Message : iq.TonerStatus;
+                iq.LaptopIP = string.IsNullOrEmpty(iq.LaptopIP) ? ex.Message : iq.LaptopIP;
+                iq.LaptopNetwork = string.IsNullOrEmpty(iq.LaptopNetwork) ? ex.Message : iq.LaptopNetwork;
                 iq.PrinterService = "";
             }
             return iq;

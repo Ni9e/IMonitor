@@ -480,5 +480,60 @@ namespace IMonitorService.Code
         }
 
         #endregion
+
+        #region IndexQueryInfo
+
+        public static void DeleteIndexQuery()
+        {
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                string sql = "truncate table dbo.IndexQuery";
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
+        }
+        
+        public static void InsertIndexQuery(IndexQuery iq)
+        {
+            SqlParameter[] paras = {
+                                        new SqlParameter("@storeNo",iq.StoreNo),
+                                        new SqlParameter("@storeRegion",iq.StoreRegion),
+                                        new SqlParameter("@storeType",iq.StoreType),
+                                        new SqlParameter("@routerIP",iq.RouterIP),
+                                        new SqlParameter("@routerNetwork",iq.RouterNetwork),
+                                        new SqlParameter("@printerIP",iq.PrinterIP),
+                                        new SqlParameter("@printerNetwork",iq.PrinterNetwork),
+                                        new SqlParameter("@printerType",iq.PrinterType),
+                                        new SqlParameter("@tonerType",iq.TonerType),
+                                        new SqlParameter("@printerStatus",iq.PrinterStatus),
+                                        new SqlParameter("@tonerStatus",iq.TonerStatus),
+                                        new SqlParameter("@laptopNetwork",iq.LaptopNetwork),
+                                        new SqlParameter("@laptopIP",iq.LaptopIP)
+                                   };
+            SqlHelper.ExecuteNonQuery("InsertIndexQuery", paras);
+        }
+
+        public static DataSet GetIndexQuery()
+        {
+            DataSet ds = new DataSet();
+            string sql = string.Empty;
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                sql = "select * from dbo.IndexQuery";
+                SqlDataAdapter da = new SqlDataAdapter();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                da.SelectCommand = cmd;
+                conn.Open();
+                da.Fill(ds);
+                conn.Close();
+            }
+            return ds;
+        }
+
+        #endregion
     }
 }

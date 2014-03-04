@@ -527,6 +527,16 @@ namespace IMonitorService.Code
             flag.Set();
         }
 
+        public static void GetRouterTask()
+        {
+            SqlHelper.DeleteRouterInformationTemp();
+            Common.DoGetRouterInformationTask();
+            Console.WriteLine("Thread sleep 30s...");
+            Thread.Sleep(30 * 1000);
+            Common.DoGetRouterInformationTask();
+            SqlHelper.InsertRouterInformation();
+        }
+
         #endregion
 
         #region 笔记本信息抓取

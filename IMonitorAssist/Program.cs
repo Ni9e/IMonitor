@@ -25,12 +25,7 @@ namespace IMonitorAssist
                         break;
                     case "ROUTER":
                         {
-                            SqlHelper.DeleteRouterInformationTemp();
-                            Common.DoGetRouterInformationTask();
-                            Console.WriteLine("Thread sleep 30s...");
-                            Thread.Sleep(30 * 1000);
-                            Common.DoGetRouterInformationTask();
-                            SqlHelper.InsertRouterInformation();
+                            Common.GetRouterTask();
                         }
                         break;
                     case "LAPTOP":

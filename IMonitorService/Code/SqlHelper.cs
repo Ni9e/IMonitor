@@ -15,8 +15,8 @@ namespace IMonitorService.Code
 
         private static string connRemote = @"Data Source=10.15.130.78,51433;Initial Catalog=LUXERP;User ID=sa;Password=portal123;Max Pool Size = 512;Connection Timeout=15;";
         //private static string connLocal = @"Data Source=10.15.140.110;Initial Catalog=IMonitor;User ID=iwooo;Password=iwooo2013;Max Pool Size = 512;Connection Timeout=15;";
-        private static string connLocal = @"Data Source=.;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
-        //private static string connLocal = @"Data Source=FINKLE-WIN8\SQL2008R2;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
+        //private static string connLocal = @"Data Source=.;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
+        private static string connLocal = @"Data Source=FINKLE-WIN8\SQL2008R2;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
 
         #endregion
 
@@ -399,13 +399,13 @@ namespace IMonitorService.Code
                 switch (rc)
                 {
                     case RouterCondition.All:
-                        sql = "select COUNT(*) total from dbo.RouterInformation";
+                        sql = "select COUNT(*) total from dbo.RouterInformation where convert(nvarchar(10),date,127)=convert(nvarchar(10),GETDATE(),127)";
                         break;
                     case RouterCondition.Up:
-                        sql = "select COUNT(*) total from dbo.RouterInformation where routerNetwork='Up'";
+                        sql = "select COUNT(*) total from dbo.RouterInformation where routerNetwork='Up' and convert(nvarchar(10),date,127)=convert(nvarchar(10),GETDATE(),127)";
                         break;
                     case RouterCondition.Down:
-                        sql = "select COUNT(*) total from dbo.RouterInformation where routerNetwork='Down'";
+                        sql = "select COUNT(*) total from dbo.RouterInformation where routerNetwork='Down' and convert(nvarchar(10),date,127)=convert(nvarchar(10),GETDATE(),127)";
                         break;
                 }
                 SqlDataAdapter da = new SqlDataAdapter();

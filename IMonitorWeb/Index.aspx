@@ -47,6 +47,16 @@
   <script>
     $('#mindex').addClass('active');
 
+    var flag = 0;
+
+    $('#storeNo').bind("keydown", function (e) {
+      var key = e.which;
+      if (key == 13 && flag == 0) {
+        flag = 1;
+        $('#query').click();
+      }
+    })
+
     function renderPiePrinter() {
       var piedata = [];
       var total = 0;      
@@ -208,8 +218,7 @@
         }
       });
     }
-
-
+    
 
     setTimeout("renderPieRouter()", 1000);
     setTimeout("renderPiePrinter()", 1500);
@@ -267,6 +276,7 @@
           $('#laptopNetwork').removeClass("btn-success").addClass("btn-danger").text("").text("笔记本网络: ");
         },
         success: function (data, textStatus) {
+          flag = 0;
           loadimg.hide();
           query.show();
           queryData = eval(data);

@@ -55,8 +55,7 @@
                   <li id="mreport"><a href="#fakelink">报表</a>
                     <ul>
                       <!-- Sub Menu items go here -->
-                      <li id="mprintrepo"><a href="#fakelink">打印机报表</a></li>
-                      <li id="mrouterepo"><a href="#fakelink">路由器报表</a></li>
+                      <li id="mprintrepo"><a href="#fakelink">打印机报表</a></li>                      
                     </ul>
                   </li>                    
                 </ul>                

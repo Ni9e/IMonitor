@@ -49,6 +49,7 @@
 
     var flag = 0;
 
+    $('#storeNo').focus();
     $('#storeNo').bind("keydown", function (e) {
       var key = e.which;
       if (key == 13 && flag == 0) {

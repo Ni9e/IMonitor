@@ -41,7 +41,7 @@
                   <!-- Menu items go here -->
                   <li id="mindex"><a href="/Index.aspx">首页</a></li>
                   <li id="mstores"><a href="/Store/StoreInformation.aspx">门店维护</a></li>
-                  <li id="mconfig"><a href="#fakelink">策略配置</a></li>
+                  <li id="mconfig"><a href="/Facility/Config.aspx">策略配置</a></li>
                   <li id="mfacility"><a href="#fakelink">门店设备</a>
                         <ul>
                           <!-- Sub Menu items go here -->

@@ -42,10 +42,11 @@
     {
       span2 = GoodTime.AddDays(1d) - DateTime.Now; 
     }
-    object state = new object();    
+    object state1 = new object();
+    object state2 = new object();  
     
-    timerMorning = new System.Threading.Timer(new System.Threading.TimerCallback(PrinterTask), state, span1, TimeSpan.FromTicks(TimeSpan.TicksPerDay));
-    timerAfternoon = new System.Threading.Timer(new System.Threading.TimerCallback(PrinterTask), state, span2, TimeSpan.FromTicks(TimeSpan.TicksPerDay));
+    timerMorning = new System.Threading.Timer(new System.Threading.TimerCallback(PrinterTask), state1, span1, TimeSpan.FromTicks(TimeSpan.TicksPerDay));
+    timerAfternoon = new System.Threading.Timer(new System.Threading.TimerCallback(PrinterTask), state2, span2, TimeSpan.FromTicks(TimeSpan.TicksPerDay));
     
     AddTask(5 * 60, IMonitorTask.GetRouterTask); // 5 分钟一次路由信息
     AddTask(8 * 60, IMonitorTask.GetLaptopTask); // 8 分钟一次笔记本信息

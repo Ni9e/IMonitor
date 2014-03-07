@@ -189,7 +189,7 @@
               radius: 100,
               listeners: {
                 bound: function () {
-                  //window.location.href = '/Monitor/Print/PrintInfo.aspx';
+                  window.location.href = '/Facility/Router.aspx';
                 },
               },
               tip: {

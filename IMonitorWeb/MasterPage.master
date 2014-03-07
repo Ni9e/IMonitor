@@ -45,8 +45,8 @@
                   <li id="mfacility"><a href="#fakelink">门店设备</a>
                         <ul>
                           <!-- Sub Menu items go here -->
-                          <li id="mrouter"><a href="/Facility/Router.aspx">路由器</a></li>
-                          <li id="mprint"><a href="/Facility/Printer.aspx">打印机</a></li>                           
+                          <li id="mprint"><a href="/Facility/Printer.aspx">打印机</a></li>  
+                          <li id="mrouter"><a href="/Facility/Router.aspx">路由器</a></li>                                                   
                           <li id="mlaptop"><a href="/Facility/Laptop.aspx">笔记本</a></li>
                           <li id="mfinger"><a href="#fakelink" style="display:none;">指纹机</a></li>
                           <li id="mflow"><a href="#fakelink" style="display:none;">人流机</a></li>

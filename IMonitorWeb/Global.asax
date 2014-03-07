@@ -25,18 +25,18 @@
         todo.Invoke();
         AddTask(seconds, todo);
       });
-  }
+  }    
 
   void Application_Start(object sender, EventArgs e) 
   {
     // 在应用程序启动时运行的代码
-    string[] print1 = IMonitorConfig.GetSetting("printMorning").Split(':');
-    string[] print2 = IMonitorConfig.GetSetting("printAfternoon").Split(':');
+    string[] print1 = IMonitorConfig.GetSetting("print1").Split(':');
+    string[] print2 = IMonitorConfig.GetSetting("print2").Split(':');
     string router = IMonitorConfig.GetSetting("router");
-    string laptop = IMonitorConfig.GetSetting("laptop");    
-    
+    string laptop = IMonitorConfig.GetSetting("laptop");
+
     DateTime LuckTime = DateTime.Now.Date.Add(new TimeSpan(Convert.ToInt32(print1[0]), Convert.ToInt32(print1[1]), 0));  // 打印机每天获取时间为上午11点
-    DateTime GoodTime = DateTime.Now.Date.Add(new TimeSpan(Convert.ToInt32(print2[0]), Convert.ToInt32(print2[1]), 0)); // 和下午16点30分
+    DateTime GoodTime = DateTime.Now.Date.Add(new TimeSpan(Convert.ToInt32(print2[0]), Convert.ToInt32(print2[1]), 0));  // 和下午16点30分
     TimeSpan span1 = LuckTime - DateTime.Now;
     TimeSpan span2 = GoodTime - DateTime.Now;
     if (span1 < TimeSpan.Zero)
@@ -52,7 +52,7 @@
     
     timerMorning = new System.Threading.Timer(new System.Threading.TimerCallback(PrinterTask), state1, span1, TimeSpan.FromTicks(TimeSpan.TicksPerDay));
     timerAfternoon = new System.Threading.Timer(new System.Threading.TimerCallback(PrinterTask), state2, span2, TimeSpan.FromTicks(TimeSpan.TicksPerDay));
-    
+
     AddTask(Convert.ToInt32(router) * 60, IMonitorTask.GetRouterTask); // 5 分钟一次路由信息
     AddTask(Convert.ToInt32(laptop) * 60, IMonitorTask.GetLaptopTask); // 8 分钟一次笔记本信息
     // 后续加入指纹打卡机和客流统计的自动任务

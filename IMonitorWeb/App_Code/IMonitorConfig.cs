@@ -2,20 +2,49 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Configuration;
+using System.IO;
+using System.Text;
 
 /// <summary>
 /// IMonitorConfig 的摘要说明
 /// </summary>
 public class IMonitorConfig
 {
+    private static string p = AppDomain.CurrentDomain.BaseDirectory;
+
     public static string GetSetting(string name)
     {
-        return WebConfigurationManager.AppSettings[name];
+        string result = string.Empty;
+        string filepath = p + "\\conf.txt";
+        string line;
+        using (StreamReader sr = new StreamReader(filepath, Encoding.Default))
+        {
+            while ((line = sr.ReadLine()) != null)
+            {
+                int n = line.IndexOf(name + "$");
+                if (n != -1)
+                {
+                    int k = line.IndexOf("$");
+                    result = line.Substring(k + 1);
+                }
+            }
+        }
+
+        return result;
     }
 
-    public static void WriteSetting(string name, string value)
+    public static void WriteSetting(string[] name, string[] value)
     {
-        WebConfigurationManager.AppSettings.Set(name, value);
+        string filepath = p + "\\conf.txt";
+        using (FileStream fs = new FileStream(filepath, FileMode.Open))
+        {
+            using (StreamWriter sw = new StreamWriter(fs))
+            {
+                for (int i = 0; i < name.Length; i++ )
+                {
+                    sw.WriteLine(name[i] + "$" + value[i]);
+                }
+            }
+        }
     }
 }

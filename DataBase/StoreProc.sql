@@ -91,3 +91,20 @@ BEGIN
 	SELECT @storeNo, @storeRegion, @storeType, @routerIP, @routerNetwork, @printerIP, @printerNetwork,
 	       @printerType, @tonerType, @printerStatus, @tonerStatus, @laptopNetwork, @laptopIP, ''
 END
+GO
+
+-- =============================================
+-- Author:		<Finkle>
+-- Create date: <2014-03-9>
+-- Description:	<插入新增加的店铺邮件信息>
+-- =============================================
+CREATE PROCEDURE [dbo].[InsertSendEmail] 
+AS
+BEGIN
+  insert dbo.SendEmail 
+  select distinct storeNo, 0, CONVERT(nvarchar(10),GETDATE(),126), 0, 900
+  from dbo.PrinterInformation 
+  where CONVERT(nvarchar(10),date,127)=CONVERT(nvarchar(10),GETDATE(),127) and 
+  storeNo in(select distinct storeNo from dbo.PrinterInformation where CONVERT(nvarchar(10),date,127)=CONVERT(nvarchar(10),GETDATE(),127)
+             except select storeNo from dbo.SendEmail where storeStatus='900'); 
+END

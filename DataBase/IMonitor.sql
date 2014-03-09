@@ -117,7 +117,8 @@ CREATE TABLE SendEmail
 	storeNo			nvarchar(50),
 	isSend			bit,
 	date			datetime,
-	tonerCount		int
+	tonerCount		int,
+	storeStatus		nvarchar(50)
 )
 
 CREATE TABLE IndexQuery

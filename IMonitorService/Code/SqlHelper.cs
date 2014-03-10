@@ -15,8 +15,8 @@ namespace IMonitorService.Code
 
         private static string connRemote = @"Data Source=10.15.130.78,51433;Initial Catalog=LUXERP;User ID=sa;Password=portal123;Max Pool Size = 512;Connection Timeout=15;";
         //private static string connLocal = @"Data Source=10.15.140.110;Initial Catalog=IMonitor;User ID=iwooo;Password=iwooo2013;Max Pool Size = 512;Connection Timeout=15;";
-        //private static string connLocal = @"Data Source=.;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
-        private static string connLocal = @"Data Source=FINKLE-WIN8\SQL2008R2;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
+        private static string connLocal = @"Data Source=.;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
+        //private static string connLocal = @"Data Source=FINKLE-WIN8\SQL2008R2;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
 
         #endregion
 
@@ -538,7 +538,74 @@ namespace IMonitorService.Code
 
         #region EmailSend
 
-       
+        public static void SyncSendEmail()
+        {
+            SqlHelper.ExecuteNonQuery("SyncSendEmail", null);
+        }
+
+        // 邮件发送成功，isSend = 1 否则 isSend = 0
+        public static void UpdateIsSend(SendEmail email)
+        {
+            string sql = string.Empty;
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                if (email.IsSend)
+                {
+                    sql = "update dbo.SendEmail set isSend=1, date=GETDATE() where storeStatus='900' and storeNo=@storeNo;";
+                }
+                else
+                {
+                    sql = "update dbo.SendEmail set isSend=0, date=GETDATE() where storeStatus='900' and storeNo=@storeNo;";
+                }
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@storeNo", email.StoreNo);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+        }
+
+        public static void UpdateIsSend(List<SendEmail> emailList)
+        {
+            string sql0 = "update dbo.SendEmail set isSend=0, date=GETDATE() where storeStatus='900' and storeNo in('',";
+            string sql1 = "update dbo.SendEmail set isSend=1, date=GETDATE() where storeStatus='900' and storeNo in('',";
+
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                foreach (SendEmail email in emailList)
+                {
+                    if (email.IsSend)
+                    {
+                        sql1 += "'" + email.StoreNo + "',";
+                    }
+                    else
+                    {
+                        sql0 += "'" + email.StoreNo + "',";
+                    }
+                }
+                sql0 = sql0.TrimEnd(',') + ");";
+                sql1 = sql1.TrimEnd(',') + ");";
+                string sql = sql0 + sql1;
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+        }
+
+        // 更新所有邮件发送状态, 打印机墨水大于10%则isSend = 0
+        public static void UpdateIsSend()
+        {
+            string sql = string.Empty;
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                sql = "update s set isSend = 0 from dbo.SendEmail s left join dbo.Printer p on s.storeNo=p.storeNo where convert(nvarchar(10),p.date,127) = convert(nvarchar(10),GETDATE(),127) and p.status='OK' and (case when substring(p.tonerStatus,PATINDEX('%[0-9]%',p.tonerStatus),CHARINDEX('%',p.tonerStatus,1)-PATINDEX('%[0-9]%',p.tonerStatus))<>'' then CAST(substring(p.tonerStatus,PATINDEX('%[0-9]%',p.tonerStatus),CHARINDEX('%',p.tonerStatus,1)-PATINDEX('%[0-9]%',p.tonerStatus)) as int) else 999 end) > 10 ";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+        }
         #endregion
     }
 }

@@ -96,9 +96,9 @@ GO
 -- =============================================
 -- Author:		<Finkle>
 -- Create date: <2014-03-9>
--- Description:	<插入新增加的店铺邮件信息>
+-- Description:	<插入新增加的店铺邮件信息,更改已关店信息>
 -- =============================================
-CREATE PROCEDURE [dbo].[InsertSendEmail] 
+CREATE PROCEDURE [dbo].[SyncSendEmail] 
 AS
 BEGIN
   insert dbo.SendEmail 
@@ -107,4 +107,9 @@ BEGIN
   where CONVERT(nvarchar(10),date,127)=CONVERT(nvarchar(10),GETDATE(),127) and 
   storeNo in(select distinct storeNo from dbo.PrinterInformation where CONVERT(nvarchar(10),date,127)=CONVERT(nvarchar(10),GETDATE(),127)
              except select storeNo from dbo.SendEmail where storeStatus='900'); 
+             
+  update dbo.SendEmail set storeStatus='000'
+  where storeNo in(select storeNo from dbo.SendEmail where storeNo='900' except 
+				   select distinct storeNo from dbo.PrinterInformation 
+				   where CONVERT(nvarchar(10),date,127)=CONVERT(nvarchar(10),GETDATE(),127));
 END

@@ -65,6 +65,33 @@ public partial class Facility_PrinterJSON : System.Web.UI.Page
                         Response.Write("打印机信息获取成功");
                         Response.End();
                         return; 
+                    }
+                case "SENDEMAIL":
+                    {
+                        IMonitorTask.GetTaskData(TaskCondition.SendEmail);
+
+                        DataSet ds = SqlHelper.GetEmailSendResult();
+                        string msg = string.Empty;
+                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                        {
+                            string storeNo = ds.Tables[0].Rows[i][0].ToString();
+                            string isSend = ds.Tables[0].Rows[i][1].ToString();
+                            if (isSend == "False")
+                            {
+                                msg += storeNo + " 门店邮件发送失败！ ";
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(msg))
+                        {
+                            msg = "所有缺墨门店已经发送邮件通知！";
+                        }
+                        else
+                        {
+                            msg += " 其他缺墨门店已经发送邮件通知！";
+                        }
+                        Response.Write(msg);
+                        return;
                     }                    
             }
         }

@@ -718,5 +718,160 @@ namespace IMonitorService.Code
             }
         }
         #endregion
+
+        #region 发送邮件
+
+        public static void SendLowinkEmail()
+        {
+            // 同步门店信息，当日发送邮件状态同步
+            SqlHelper.SyncSendEmail();
+            SqlHelper.UpdateIsSend();
+
+            // 获取缺墨的门店
+            List<string> storeNos = new List<string>();
+            DataSet lowink = SqlHelper.GetLowInkPrinter();
+            for (int i = 0; i < lowink.Tables[0].Rows.Count; i++)
+            {
+                storeNos.Add(lowink.Tables[0].Rows[i][0].ToString());
+            }
+
+            // 获取缺墨门店的发送邮件状态
+            DataSet ds = SqlHelper.GetEmailIsSend(storeNos);
+            int count = ds.Tables[0].Rows.Count;
+            bool[] status = new bool[count]; // 记录发送邮件的状态
+
+            // EmailFrom emailFrom = new EmailFrom("IwoooMonitor@163.com", "iwooo2014", "smtp.163.com", 25);   
+            EmailFrom emailFrom = new EmailFrom("zhanggb@iwooo.com", "finkle1986819", "59.60.9.101", 25);
+
+            List<string> cc = new List<string>();
+            DataSet emailAddress = SqlHelper.GetEmailAddress(storeNos);
+            //cc.Add("liull@iwooo.com");
+            cc.Add("zhanggb@iwooo.com");
+
+            string subject = DateTime.Now.ToString("yyyy-MM-dd") + " 门店打印机缺墨提醒";
+            string mailBody = "以下门店墨盒不足10%，请尽快更换！<br>";
+            int flag = 0;
+            for (int i = 0; i < count; i++)
+            {
+                string storeNo = ds.Tables[0].Rows[i][0].ToString();
+                string isSend = ds.Tables[0].Rows[i][1].ToString();
+                if (isSend == "False")
+                {
+                    mailBody += " " + storeNo + ",";
+                }
+                else
+                {
+                    flag++;  // 记录已发送过邮件的数量，如果和缺墨的门店的数量一样说明都发送过了
+                }
+                status[i] = true;
+            }
+            mailBody = mailBody.TrimEnd(',') + "<br>共 " + (count - flag).ToString() + " 家门店";
+            EmailHelper email = new EmailHelper(emailFrom, "yangyj@iwooo.com", cc);
+
+            if (flag == count)
+            {
+                Console.WriteLine("所有门店已经通知了");
+            }
+            else
+            {
+                if (email.SendMail(subject, mailBody) == true)
+                {
+                    Console.WriteLine("邮件发送成功！");
+                }
+                else
+                {
+                    // 发送失败，需要回滚isSend的状态
+                    for (int i = 0; i < count; i++)
+                    {
+                        string isSend = ds.Tables[0].Rows[i][1].ToString();
+                        if (isSend == "False")
+                        {
+                            status[i] = false;
+                        }
+                    }
+                    Console.WriteLine("邮件发送失败！");
+                }
+            }
+            // 更新发送邮件状态到数据库
+            List<SendEmail> sendEmail = new List<SendEmail>();
+            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+            {
+                SendEmail sendemail = new SendEmail();
+                sendemail.StoreNo = ds.Tables[0].Rows[i][0].ToString();
+                sendemail.IsSend = status[i];
+                sendEmail.Add(sendemail);
+            }
+            SqlHelper.UpdateIsSend(sendEmail);
+        }
+
+        public static void SendLowinkEmailPerStore()
+        {
+            // 同步门店信息，当日发送邮件状态同步
+            SqlHelper.SyncSendEmail();
+            SqlHelper.UpdateIsSend();
+
+            // 获取缺墨的门店
+            List<string> storeNos = new List<string>();
+            DataSet lowink = SqlHelper.GetLowInkPrinter();
+            for (int i = 0; i < lowink.Tables[0].Rows.Count; i++)
+            {
+                storeNos.Add(lowink.Tables[0].Rows[i][0].ToString());
+            }
+
+            // 获取缺墨门店的发送邮件状态
+            DataSet ds = SqlHelper.GetEmailIsSend(storeNos);
+            int count = ds.Tables[0].Rows.Count;
+            bool[] status = new bool[count]; // 记录发送邮件的状态
+
+            // EmailFrom emailFrom = new EmailFrom("IwoooMonitor@163.com", "iwooo2014", "smtp.163.com", 25);   
+            EmailFrom emailFrom = new EmailFrom("zhanggb@iwooo.com", "finkle1986819", "59.60.9.101", 25);
+
+            List<string> cc = new List<string>();
+            DataSet emailAddress = SqlHelper.GetEmailAddress(storeNos);
+            cc.Add("liull@iwooo.com");
+            cc.Add("yangyj@iwooo.com");
+            cc.Add("HelpDesk.IT@lrgc.com.cn");
+
+            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+            {
+                string storeNo = ds.Tables[0].Rows[i][0].ToString();
+                string isSend = ds.Tables[0].Rows[i][1].ToString();
+
+                string subject = storeNo + " 门店缺墨";
+                string mailBody = storeNo + " 门店墨盒不足10%，请尽快更换！";
+                EmailHelper email = new EmailHelper(emailFrom, "IwoooMonitor@163.com", cc);
+                if (isSend == "False")
+                {
+                    if (email.SendMail(subject, mailBody) == true)
+                    {
+                        status[i] = true;
+                        Console.WriteLine("{0} 发送成功！", storeNo);
+                    }
+                    else
+                    {
+                        status[i] = false;
+                        Console.WriteLine("{0} 发送失败！", storeNo);
+                    }
+                }
+                else
+                {
+                    status[i] = true;
+                    Console.WriteLine("{0} 已经发送过了！", storeNo);
+                }
+            }
+
+            // 更新发送邮件状态到数据库
+            List<SendEmail> sendEmail = new List<SendEmail>();
+            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+            {
+                SendEmail sendemail = new SendEmail();
+                sendemail.StoreNo = ds.Tables[0].Rows[i][0].ToString();
+                sendemail.IsSend = status[i];
+                sendEmail.Add(sendemail);
+            }
+            SqlHelper.UpdateIsSend(sendEmail);
+        }
+
+        #endregion
     }
 }

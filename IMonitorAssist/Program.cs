@@ -41,6 +41,11 @@ namespace IMonitorAssist
                             SqlHelper.InsertIndexQuery(iq);                            
                         }
                         break;
+                    case "SENDEMAIL":
+                        {
+                            Common.SendLowinkEmailPerStore();
+                        }
+                        break;
                 }
             }
             else
@@ -50,26 +55,30 @@ namespace IMonitorAssist
 
                 //Common.GetPrinterService("10.160.14.50");
 
-                IndexQuery iq = Common.GetIndexData("6608");
-                SqlHelper.DeleteIndexQuery();
-                SqlHelper.InsertIndexQuery(iq);
-                Console.WriteLine("StoreNo: " + iq.StoreNo);
-                Console.WriteLine("Router: " + iq.RouterNetwork);
-                Console.WriteLine("Printer: " + iq.PrinterNetwork);
-                Console.WriteLine("PStatus: " + iq.PrinterStatus);
-                Console.WriteLine("TStatus: " + iq.TonerStatus);
-                Console.WriteLine("Laptop: " + iq.LaptopNetwork);
-                Console.WriteLine("LapIP: " + iq.LaptopIP);
+                //IndexQuery iq = Common.GetIndexData("6608");
+                //SqlHelper.DeleteIndexQuery();
+                //SqlHelper.InsertIndexQuery(iq);
+                //Console.WriteLine("StoreNo: " + iq.StoreNo);
+                //Console.WriteLine("Router: " + iq.RouterNetwork);
+                //Console.WriteLine("Printer: " + iq.PrinterNetwork);
+                //Console.WriteLine("PStatus: " + iq.PrinterStatus);
+                //Console.WriteLine("TStatus: " + iq.TonerStatus);
+                //Console.WriteLine("Laptop: " + iq.LaptopNetwork);
+                //Console.WriteLine("LapIP: " + iq.LaptopIP);
 
                 //Common.DoGetPrinterInfomationTask();
                 //Common.DoGetRouterInformationTask();
                 //Common.DoGetLaptopInformationTask();
+
+                Common.SendLowinkEmailPerStore();
 
                 sw.Stop();
                 double s = sw.ElapsedMilliseconds / 1000.0;
                 Console.WriteLine(s.ToString());
             }
              
-        }        
+        }
+
+       
     }
 }

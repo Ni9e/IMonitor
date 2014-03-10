@@ -12,5 +12,6 @@ namespace IMonitorService.Code
         Laptop,
         Finger,
         Flow,
+        SendEmail,
     }
 }

@@ -113,3 +113,25 @@ BEGIN
 				   select distinct storeNo from dbo.PrinterInformation 
 				   where CONVERT(nvarchar(10),date,127)=CONVERT(nvarchar(10),GETDATE(),127));
 END
+GO
+
+-- =============================================
+-- Author:		<Finkle>
+-- Create date: <2014-03-9>
+-- Description:	<更新所有邮件发送状态，统计墨盒更换数量>
+-- =============================================
+CREATE PROCEDURE [dbo].[UpdateSendEmail] 
+AS
+BEGIN
+	insert dbo.TonerReport
+	select s.storeNo, GETDATE(), CAST(s.isSend as int), s.storeStatus 
+	from dbo.SendEmail s left join dbo.PrinterInformation p on s.storeNo=p.storeNo 
+	where convert(nvarchar(10),p.date,127) = convert(nvarchar(10),GETDATE(),127) and p.printerNetwork='Up' 
+	and (case when substring(p.tonerStatus,PATINDEX('%[0-9]%',p.tonerStatus),CHARINDEX('%',p.tonerStatus,1)-PATINDEX('%[0-9]%',p.tonerStatus))<>'' then CAST(substring(p.tonerStatus,PATINDEX('%[0-9]%',p.tonerStatus),CHARINDEX('%',p.tonerStatus,1)-PATINDEX('%[0-9]%',p.tonerStatus)) as int) else 999 end) > 10 
+	and isSend=1;
+
+	update s set isSend = 0 
+	from dbo.SendEmail s left join dbo.PrinterInformation p on s.storeNo=p.storeNo 
+	where convert(nvarchar(10),p.date,127) = convert(nvarchar(10),GETDATE(),127) and p.printerNetwork='Up' 
+	and (case when substring(p.tonerStatus,PATINDEX('%[0-9]%',p.tonerStatus),CHARINDEX('%',p.tonerStatus,1)-PATINDEX('%[0-9]%',p.tonerStatus))<>'' then CAST(substring(p.tonerStatus,PATINDEX('%[0-9]%',p.tonerStatus),CHARINDEX('%',p.tonerStatus,1)-PATINDEX('%[0-9]%',p.tonerStatus)) as int) else 999 end) > 10;
+END

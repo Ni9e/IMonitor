@@ -138,3 +138,11 @@ CREATE TABLE IndexQuery
 	laptopIP		nvarchar(50),
 	printerService	nvarchar(500)
 )
+
+CREATE TABLE TonerReport
+(
+	storeNo			nvarchar(50),
+	changeDate		datetime,
+	tonerCount		int,
+	storeStatus		nvarchar(50)
+)

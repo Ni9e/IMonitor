@@ -8,6 +8,7 @@
   private static void PrinterTask(object state)
   {
     IMonitorTask.GetPrinterTask();
+    IMonitorTask.GetSendEmailTask();
   }
   
   // 周期任务

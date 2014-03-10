@@ -125,6 +125,7 @@
       mgetprint.show();
       $('#tbUP').trigger("reloadGrid");
       $('#tbDown').trigger("reloadGrid");
+      sendEmail();
     }
 
     function time(s) {
@@ -150,6 +151,32 @@
           clearTimeout(id);
           info.text(data);
           setTimeout(clearAlert, 1 * 1000);
+        },
+        complete: function (XMLHttpRequest, textStatus) {
+          //HideLoading();
+        },
+        error: function () {
+          //请求出错处理                    
+        }
+      });
+    }
+
+    function sendEmail() {
+      $.ajax({
+        type: "get",
+        url: "/Facility/PrinterJSON.aspx?status=sendemail",
+        beforeSend: function (XMLHttpRequest) {
+          //ShowLoading();
+          mgetprint.hide();
+          info.fadeToggle(2000);
+          info.text("正在发送邮件...");
+        },
+        success: function (data, textStatus) {          
+          info.text("邮件发送完毕！");
+          info.fadeToggle(1000);
+          mgetprint.show();
+          var msgtemp = $('#message').text();
+          $('#message').text(msgtemp + " " + data.substring(0, data.indexOf("<!DOCTYPE html>")));
         },
         complete: function (XMLHttpRequest, textStatus) {
           //HideLoading();

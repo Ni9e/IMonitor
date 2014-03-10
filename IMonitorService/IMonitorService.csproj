@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="Code\Common.cs" />
     <Compile Include="Code\Config.cs" />
+    <Compile Include="Code\EmailFrom.cs" />
+    <Compile Include="Code\EmailHelper.cs" />
     <Compile Include="Code\IndexQuery.cs" />
     <Compile Include="Code\LaptopInformation.cs" />
     <Compile Include="Code\Pattern.cs" />
@@ -49,6 +51,7 @@
     <Compile Include="Code\PrinterCondition.cs" />
     <Compile Include="Code\PrinterInformation.cs" />
     <Compile Include="Code\PrinterType.cs" />
+    <Compile Include="Code\SendEmail.cs" />
     <Compile Include="Code\TaskCondition.cs" />
     <Compile Include="Code\RequestState.cs" />
     <Compile Include="Code\RouterCondition.cs" />

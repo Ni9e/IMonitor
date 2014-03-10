@@ -60,4 +60,14 @@ public class IMonitorTask
         p.StartInfo.FileName = Path;
         p.Start();
     }
+
+    public static void GetSendEmailTask()
+    {
+        Process p = new Process();
+        p.StartInfo.CreateNoWindow = true;
+        p.StartInfo.Arguments = "SENDEMAIL";
+        p.StartInfo.UseShellExecute = false;
+        p.StartInfo.FileName = Path;
+        p.Start();
+    }
 }

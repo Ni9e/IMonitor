@@ -15,8 +15,8 @@ namespace IMonitorService.Code
 
         private static string connRemote = @"Data Source=10.15.130.78,51433;Initial Catalog=LUXERP;User ID=sa;Password=portal123;Max Pool Size = 512;Connection Timeout=15;";
         //private static string connLocal = @"Data Source=10.15.140.110;Initial Catalog=IMonitor;User ID=iwooo;Password=iwooo2013;Max Pool Size = 512;Connection Timeout=15;";
-        private static string connLocal = @"Data Source=.;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
-        //private static string connLocal = @"Data Source=FINKLE-WIN8\SQL2008R2;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
+        //private static string connLocal = @"Data Source=.;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
+        private static string connLocal = @"Data Source=FINKLE-WIN8\SQL2008R2;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
 
         #endregion
 
@@ -543,6 +543,12 @@ namespace IMonitorService.Code
             SqlHelper.ExecuteNonQuery("SyncSendEmail", null);
         }
 
+        // 更新所有邮件发送状态, 打印机墨水大于10%则isSend = 0
+        public static void UpdateIsSend()
+        {
+            SqlHelper.ExecuteNonQuery("UpdateSendEmail", null);
+        }
+
         // 邮件发送成功，isSend = 1 否则 isSend = 0
         public static void UpdateIsSend(SendEmail email)
         {
@@ -592,20 +598,85 @@ namespace IMonitorService.Code
                 conn.Close();
             }
         }
-
-        // 更新所有邮件发送状态, 打印机墨水大于10%则isSend = 0
-        public static void UpdateIsSend()
+        
+        // 获取邮件发送状态
+        public static bool GetEmailIsSend(string storeNo)
         {
+            string sql = string.Empty;
+            bool isSend = false;
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                sql = "select isSend from dbo.SendEmail where storeNo=@storeNo;";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@storeNo", storeNo);
+                conn.Open();
+                isSend = (bool)cmd.ExecuteScalar();
+                conn.Close();
+            }
+            return isSend;
+        }
+
+        public static DataSet GetEmailIsSend(List<string> storesNo)
+        {
+            DataSet ds = new DataSet();
             string sql = string.Empty;
             using (SqlConnection conn = new SqlConnection(connLocal))
             {
-                sql = "update s set isSend = 0 from dbo.SendEmail s left join dbo.Printer p on s.storeNo=p.storeNo where convert(nvarchar(10),p.date,127) = convert(nvarchar(10),GETDATE(),127) and p.status='OK' and (case when substring(p.tonerStatus,PATINDEX('%[0-9]%',p.tonerStatus),CHARINDEX('%',p.tonerStatus,1)-PATINDEX('%[0-9]%',p.tonerStatus))<>'' then CAST(substring(p.tonerStatus,PATINDEX('%[0-9]%',p.tonerStatus),CHARINDEX('%',p.tonerStatus,1)-PATINDEX('%[0-9]%',p.tonerStatus)) as int) else 999 end) > 10 ";
+                sql = "select storeNo, isSend from dbo.SendEmail where storeNo in('',";
+                foreach (string storeNo in storesNo)
+                {
+                    sql += "'" + storeNo + "',";
+                }
+                sql = sql.TrimEnd(',') + ") order by storeNo;";
+                SqlDataAdapter da = new SqlDataAdapter();
                 SqlCommand cmd = new SqlCommand(sql, conn);
+                da.SelectCommand = cmd;
                 conn.Open();
-                cmd.ExecuteNonQuery();
+                da.Fill(ds);
                 conn.Close();
             }
+            return ds;
         }
+
+        public static DataSet GetEmailAddress(List<string> storesNo)
+        {
+            DataSet ds = new DataSet();
+            string sql = string.Empty;
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                sql = "select storeNo, storeRegion, emailAddress from dbo.StoreInformation where storeNo in('',";
+                foreach (string storeNo in storesNo)
+                {
+                    sql += "'" + storeNo + "',";
+                }
+                sql = sql.TrimEnd(',') + ") order by storeNo;";
+                SqlDataAdapter da = new SqlDataAdapter();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                da.SelectCommand = cmd;
+                conn.Open();
+                da.Fill(ds);
+                conn.Close();
+            }
+            return ds;
+        }
+
+        public static DataSet GetEmailSendResult()
+        {
+            DataSet ds = new DataSet();
+            string sql = string.Empty;
+            using (SqlConnection conn = new SqlConnection(connLocal))
+            {
+                sql = "select p.storeNo, s.isSend from dbo.PrinterInformation p left join dbo.SendEmail s on p.storeNo=s.storeNo where convert(nvarchar(10),p.date,127) = convert(nvarchar(10),GETDATE(),127) and printerNetwork='Up' and (case when substring(tonerStatus,PATINDEX('%[0-9]%',tonerStatus),CHARINDEX('%',tonerStatus,1)-PATINDEX('%[0-9]%',tonerStatus))<>'' then CAST(substring(tonerStatus,PATINDEX('%[0-9]%',tonerStatus),CHARINDEX('%',tonerStatus,1)-PATINDEX('%[0-9]%',tonerStatus)) as int) else 999 end) <= 10 order by p.storeNo";
+                SqlDataAdapter da = new SqlDataAdapter();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                da.SelectCommand = cmd;
+                conn.Open();
+                da.Fill(ds);
+                conn.Close();
+            }
+            return ds;
+        }
+
         #endregion
     }
 }

@@ -15,8 +15,8 @@ namespace IMonitorService.Code
 
         private static string connRemote = @"Data Source=10.15.130.78,51433;Initial Catalog=LUXERP;User ID=sa;Password=portal123;Max Pool Size = 512;Connection Timeout=15;";
         //private static string connLocal = @"Data Source=10.15.140.110;Initial Catalog=IMonitor;User ID=iwooo;Password=iwooo2013;Max Pool Size = 512;Connection Timeout=15;";
-        //private static string connLocal = @"Data Source=.;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
-        private static string connLocal = @"Data Source=FINKLE-WIN8\SQL2008R2;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
+        private static string connLocal = @"Data Source=.;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
+        //private static string connLocal = @"Data Source=FINKLE-WIN8\SQL2008R2;Initial Catalog=IMonitor;User ID=sa;Password=Sikong1986;Max Pool Size = 512;Connection Timeout=15;";
 
         #endregion
 
@@ -622,12 +622,12 @@ namespace IMonitorService.Code
             string sql = string.Empty;
             using (SqlConnection conn = new SqlConnection(connLocal))
             {
-                sql = "select storeNo, isSend from dbo.SendEmail where storeNo in('',";
+                sql = "select e.storeNo, isSend, emailAddress from dbo.SendEmail e left join dbo.StoreInformation s on e.storeNo=s.storeNo  where e.storeNo in('',";
                 foreach (string storeNo in storesNo)
                 {
                     sql += "'" + storeNo + "',";
                 }
-                sql = sql.TrimEnd(',') + ") order by storeNo;";
+                sql = sql.TrimEnd(',') + ") order by e.storeNo;";
                 SqlDataAdapter da = new SqlDataAdapter();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 da.SelectCommand = cmd;

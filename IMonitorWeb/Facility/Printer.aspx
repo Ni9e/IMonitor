@@ -176,7 +176,7 @@
           info.fadeToggle(1000);
           mgetprint.show();
           var msgtemp = $('#message').text();
-          $('#message').text(msgtemp + " " + data.substring(0, data.indexOf("<!DOCTYPE html>")));
+          $('#message').text(msgtemp + "      " + data.substring(0, data.indexOf("<!DOCTYPE html>")));
         },
         complete: function (XMLHttpRequest, textStatus) {
           //HideLoading();

@@ -84,7 +84,7 @@ public partial class Facility_PrinterJSON : System.Web.UI.Page
 
                         if (string.IsNullOrEmpty(msg))
                         {
-                            msg = "所有缺墨门店已经发送邮件通知！";
+                            msg = " 所有缺墨门店已经发送邮件通知！";
                         }
                         else
                         {

@@ -823,23 +823,23 @@ namespace IMonitorService.Code
             int count = ds.Tables[0].Rows.Count;
             bool[] status = new bool[count]; // 记录发送邮件的状态
 
-            // EmailFrom emailFrom = new EmailFrom("IwoooMonitor@163.com", "iwooo2014", "smtp.163.com", 25);   
-            EmailFrom emailFrom = new EmailFrom("zhanggb@iwooo.com", "finkle1986819", "59.60.9.101", 25);
+            EmailFrom emailFrom = new EmailFrom("iMonitor@iwooo.com ", "1q2w3e4r", "59.60.9.101", 25);
 
-            List<string> cc = new List<string>();
-            DataSet emailAddress = SqlHelper.GetEmailAddress(storeNos);
+            List<string> cc = new List<string>(); 
             cc.Add("liull@iwooo.com");
-            cc.Add("yangyj@iwooo.com");
-            cc.Add("HelpDesk.IT@lrgc.com.cn");
+            cc.Add("zhanggb@iwooo.com");
+            //cc.Add("HelpDesk.IT@lrgc.com.cn");
+
 
             for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
             {
                 string storeNo = ds.Tables[0].Rows[i][0].ToString();
                 string isSend = ds.Tables[0].Rows[i][1].ToString();
+                string emailAddress = ds.Tables[0].Rows[i][2].ToString();
 
                 string subject = storeNo + " 门店缺墨";
-                string mailBody = storeNo + " 门店墨盒不足10%，请尽快更换！";
-                EmailHelper email = new EmailHelper(emailFrom, "IwoooMonitor@163.com", cc);
+                string mailBody = storeNo + " 门店墨盒不足10%，请注意更换！";
+                EmailHelper email = new EmailHelper(emailFrom, emailAddress, cc);
                 if (isSend == "False")
                 {
                     if (email.SendMail(subject, mailBody) == true)

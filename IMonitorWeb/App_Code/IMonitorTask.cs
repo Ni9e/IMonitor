@@ -39,6 +39,8 @@ public class IMonitorTask
         p.StartInfo.UseShellExecute = false;
         p.StartInfo.FileName = Path;
         p.Start();
+        p.WaitForExit(250 * 1000);
+        GetSendEmailTask();
     }
 
     public static void GetRouterTask()

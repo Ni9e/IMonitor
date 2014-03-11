@@ -69,6 +69,7 @@ namespace IMonitorAssist
                 //Common.DoGetPrinterInfomationTask();
                 //Common.DoGetRouterInformationTask();
                 //Common.DoGetLaptopInformationTask();
+                
 
                 Common.SendLowinkEmailPerStore();
 

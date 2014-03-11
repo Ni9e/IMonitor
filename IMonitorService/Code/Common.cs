@@ -839,7 +839,7 @@ namespace IMonitorService.Code
 
                 string subject = storeNo + " 门店缺墨";
                 string mailBody = storeNo + " 门店墨盒不足10%，请注意更换！";
-                EmailHelper email = new EmailHelper(emailFrom, emailAddress, cc);
+                EmailHelper email = new EmailHelper(emailFrom, "iwooomonitor@163.com", cc);
                 if (isSend == "False")
                 {
                     if (email.SendMail(subject, mailBody) == true)

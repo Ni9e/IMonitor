@@ -11,9 +11,9 @@
   <link href="/contents/bootstrap/css/bootstrap.css" rel="stylesheet" />
 
   <!-- Loading Flat UI -->
-  <link href="/contents/css/flat-ui.css" rel="stylesheet">
+  <link href="/contents/css/flat-ui.css" rel="stylesheet" />
 
-  <link rel="shortcut icon" href="/contents/images/favicon.ico">
+  <link rel="shortcut icon" href="/contents/images/favicon.ico" />
 
   <link href="/contents/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" />
   <link href="/contents/css/ui.jqgrid.css" rel="stylesheet" />
@@ -55,7 +55,7 @@
                   <li id="mreport"><a href="#fakelink">报表</a>
                     <ul>
                       <!-- Sub Menu items go here -->
-                      <li id="mprintrepo"><a href="#fakelink">打印机报表</a></li>                      
+                      <li id="mprintrepo"><a href="/Store/PrintReport.aspx">打印机报表</a></li>                      
                     </ul>
                   </li>                    
                 </ul>                
@@ -71,8 +71,7 @@
     </div>
     <!-- Load JS here for greater good =============================--> 
     <script src="/contents/js/jquery.ui.touch-punch.min.js"></script>
-    <script src="/contents/js/bootstrap.min.js"></script>
-    <script src="/contents/js/bootstrap-select.js"></script>
+    <script src="/contents/js/bootstrap.min.js"></script>    
     <script src="/contents/js/bootstrap-switch.js"></script>
     <script src="/contents/js/flatui-checkbox.js"></script>
     <script src="/contents/js/flatui-radio.js"></script>

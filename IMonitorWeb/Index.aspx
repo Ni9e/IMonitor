@@ -28,7 +28,9 @@
       <a href="#fakelink" class="btn btn-block btn-danger" id="laptopNetwork">笔记本网络: </a>     
     </div>
     <div class="col-md-5">
-
+      <canvas id="myCanvas" width="560" height="225" style="border:1px solid #c3c3c3;">
+        Your browser does not support the canvas element.
+      </canvas>
     </div>
     <div class="col-md-1"></div>
   </div>
@@ -275,6 +277,8 @@
           $('#printerStatus').removeClass("btn-success").addClass("btn-danger").text("").text("打印机状态: ");
           $('#tonerStatus').removeClass("btn-success").removeClass("btn-warning").addClass("btn-danger").text("").text("墨盒状态: ");
           $('#laptopNetwork').removeClass("btn-success").addClass("btn-danger").text("").text("笔记本网络: ");
+
+          setCanvas("Down", "Down", "Down", "");
         },
         success: function (data, textStatus) {
           flag = 0;
@@ -311,6 +315,7 @@
           if (lNetwork == "Up") {
             $('#laptopNetwork').removeClass("btn-danger").addClass("btn-success");
           }
+          setCanvas(rNetwork, pNetwork, lNetwork, tStatus);
         },
         complete: function (XMLHttpRequest, textStatus) {
           //HideLoading();
@@ -321,6 +326,46 @@
       });
     }
 
-  </script>    
+    function setCanvas(r, p, l, t) {
+      var c = document.getElementById("myCanvas");
+      var cxt = c.getContext("2d");
+      var img1 = new Image();
+
+      if (r == "Up") {
+        img1.src = "/contents/images/lyq.png";
+      } else {
+        img1.src = "/contents/images/lyq_b.png";
+      }      
+      img1.onload = function () {
+        cxt.drawImage(img1, 15, 45, 140, 120);
+      };
+
+      var img2 = new Image();      
+      var tstatus = currentNum(t);
+      
+      if (p == "Up" && parseInt(tstatus) <= 10) {
+        img2.src = "/contents/images/dyj_l.png";
+      } else if (p == "Up") {
+        img2.src = "/contents/images/dyj.png";
+      } else if (p == "Down") {
+        img2.src = "/contents/images/dyj_b.png";
+      }
+      img2.onload = function () {
+        cxt.drawImage(img2, 215, 48, 140, 120);
+      };
+
+      var img3 = new Image();
+      if (l == "Up") {
+        img3.src = "/contents/images/bjb.png";
+      } else {
+        img3.src = "/contents/images/bjb_b.png";
+      }      
+      img3.onload = function () {
+        cxt.drawImage(img3, 415, 50, 140, 120);
+      };
+    }
+
+    setCanvas("Down", "Down", "Down", "");
+  </script> 
 </asp:Content>
 

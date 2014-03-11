@@ -71,7 +71,17 @@ namespace IMonitorAssist
                 //Common.DoGetLaptopInformationTask();
                 
 
-                Common.SendLowinkEmailPerStore();
+                //Common.SendLowinkEmailPerStore();
+
+                //DataSet ds = SqlHelper.TonerSumReport("03", "2014", false);
+                //for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                //{
+                //    string storeNo = ds.Tables[0].Rows[i]["storeNo"].ToString();
+                //    string storeRegion = ds.Tables[0].Rows[i]["storeRegion"].ToString();
+                //    string storeType = ds.Tables[0].Rows[i]["storeType"].ToString();
+                //    string tonerCount = ds.Tables[0].Rows[i]["tonerCount"].ToString();
+                //    string storeStatus = ds.Tables[0].Rows[i]["storeStatus"].ToString();
+                //}
 
                 sw.Stop();
                 double s = sw.ElapsedMilliseconds / 1000.0;

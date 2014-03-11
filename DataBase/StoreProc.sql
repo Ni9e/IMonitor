@@ -135,3 +135,42 @@ BEGIN
 	where convert(nvarchar(10),p.date,127) = convert(nvarchar(10),GETDATE(),127) and p.printerNetwork='Up' 
 	and (case when substring(p.tonerStatus,PATINDEX('%[0-9]%',p.tonerStatus),CHARINDEX('%',p.tonerStatus,1)-PATINDEX('%[0-9]%',p.tonerStatus))<>'' then CAST(substring(p.tonerStatus,PATINDEX('%[0-9]%',p.tonerStatus),CHARINDEX('%',p.tonerStatus,1)-PATINDEX('%[0-9]%',p.tonerStatus)) as int) else 999 end) > 10;
 END
+GO
+
+-- =============================================
+-- Author:		<Finkle>
+-- Create date: <2014-03-9>
+-- Description:	<墨盒统计报表>
+-- =============================================
+CREATE PROCEDURE [dbo].[TonerSumReport] 
+(
+	@month			nvarchar(2),
+	@year			nvarchar(4),
+	@currentyear	bit
+)
+AS
+BEGIN
+	declare @s	nvarchar(10)
+	declare @e	nvarchar(10)
+	set @s = @year + '-' + @month + '-01'
+	set @e = CONVERT(nvarchar(10),DATEADD(D,-1,DATEADD(M,1,@s)),127)
+	
+	if @currentyear = 0
+	begin
+		select t.storeNo, storeRegion, storeType, sum(tonerCount) tonerCount, storeStatus
+		from TonerReport t left join StoreInformation s
+		on t.storeNo = s.storeNo
+		where CONVERT(nvarchar(10),changeDate,127) between @s and @e
+		group by t.storeNo,storeRegion,storeType,storeStatus
+	end
+	else
+	begin
+		set @s = @year + '-01-01'
+		set @e = @year + '-12-31'
+		select t.storeNo, storeRegion, storeType, sum(tonerCount) tonerCount, storeStatus
+		from TonerReport t left join StoreInformation s
+		on t.storeNo = s.storeNo
+		where CONVERT(nvarchar(10),changeDate,127) between @s and @e
+		group by t.storeNo,storeRegion,storeType,storeStatus
+	end
+END

@@ -61,6 +61,7 @@
     <Compile Include="Code\StoreHost.cs" />
     <Compile Include="Code\StoreInformation.cs" />
     <Compile Include="Code\StoreIP.cs" />
+    <Compile Include="Code\TonerReport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

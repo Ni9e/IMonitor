@@ -22,7 +22,7 @@ namespace IMonitorService.Code
         public static List<PrinterInformation> PrinterList { get; set; }
         public static List<RouterInformation> RouterList { get; set; }
         public static List<LaptopInformation> LaptopList { get; set; }
-        const int defaultTimeout = 5 * 1000; // 打印机抓取超时，5秒
+        const int defaultTimeout = 10 * 1000; // 打印机抓取超时，10秒
         private static int storeCount = 0; // 店铺数量
         private static int[] laptopComplete; // 笔记本完成Ping的数量
         private static int[] routerComplete; // 路由器完成Ping的数量
@@ -743,8 +743,7 @@ namespace IMonitorService.Code
             // EmailFrom emailFrom = new EmailFrom("IwoooMonitor@163.com", "iwooo2014", "smtp.163.com", 25);   
             EmailFrom emailFrom = new EmailFrom("zhanggb@iwooo.com", "finkle1986819", "59.60.9.101", 25);
 
-            List<string> cc = new List<string>();
-            DataSet emailAddress = SqlHelper.GetEmailAddress(storeNos);
+            List<string> cc = new List<string>();            
             //cc.Add("liull@iwooo.com");
             cc.Add("zhanggb@iwooo.com");
 

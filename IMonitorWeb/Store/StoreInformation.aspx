@@ -143,7 +143,7 @@
       }      
     });
     
-    sync();
+    //sync();
   </script>
 </asp:Content>
 

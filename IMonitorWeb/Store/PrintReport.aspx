@@ -28,16 +28,23 @@
     </div>    
     <div class="col-md-2">
       <select id="current" value="0" class="selectpicker">
-            <option value="0">非全年统计报表</option>
-            <option value="1">全年统计报表</option>            
+            <option value="0">每月统计</option>
+            <option value="1">全年统计</option>            
       </select>
     </div>    
     <div class="col-md-1">
-      <a href="#fakelink" onclick="check();" class="btn btn-primary" style="width: 100px;" id="query">查询</a>
+      <a href="#fakelink" onclick="getReport();" class="btn btn-primary" style="width: 100px;" id="query">查询</a>
       <img src="/contents/images/load_green.GIF" style="display: none;" id="loadimg" />
     </div>
   </div>
 
+  <div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+      <table id="tbReport"></table>
+    </div>
+    <div class="col-md-1"></div>
+  </div>
   <script>
     $('#mreport').addClass('active');
     $('#mprintrepo').addClass('active');
@@ -53,10 +60,57 @@
     } else {
       month += '';
     }
-    $('#year').val(date.getFullYear());
-    $('#month').val() // 获取select选中的值
-    $('#month').selectpicker('val', month); // 设置select的值
+    $('#year').val(date.getFullYear()); // 初始化当前年  
+    $('#month').selectpicker('val', month); // 初始化当前月
 
+    function captionCenter(gridName) {
+      $(gridName).closest("div.ui-jqgrid-view")
+                 .children("div.ui-jqgrid-titlebar")
+                 .css("text-align", "center")
+                 .children("span.ui-jqgrid-title")
+                 .css("float", "none");
+    };
+       
+
+    function getReport() {
+      var y = $('#year').val();
+      var m = $('#month').val();
+      var c = $('#current').val();
+      var url = "/Store/PrintReportJSON.aspx?status=query&year=" + y + "&month=" + m + "&isyear=" + c;     
+
+      $('#tbReport').jqGrid({
+        url: url,
+        datatype: "json",
+        colNames: ["店号", "区域", "店铺类型", "墨盒使用数量", "店铺状态", "日期"],
+        colModel: [
+            { name: "StoreNo", index: "StoreNo", width: 150, align: "center" },
+            { name: "StoreRegion", index: "StoreRegion", width: 150, align: "center" },
+            { name: "StoreType", index: "StoreType", width: 150, align: "center" },
+            { name: "TonerCount", index: "TonerCount", width: 250, align: "center" },
+            { name: "StoreStatus", index: "StoreStatus", width: 250, align: "center" },
+            { name: "Date", index: "Date", width: 200, align: "center" },
+        ],
+        rowNum: 500,
+        sortname: 'StoreNo',
+        viewrecords: true,
+        sortorder: "desc",
+        caption: "门店墨盒使用统计",
+        height: 395,
+        scrollrows: true,
+        gridComplete: function () {
+          captionCenter('#tbReport');
+          $('#loadimg').hide();
+          $('#query').show();
+        },
+        beforeRequest: function () {
+          $('#query').hide();
+          $('#loadimg').show();
+        }
+      });
+
+      $("#tbReport").jqGrid('setGridParam', { url: url }).trigger("reloadGrid");
+    }    
+        
   </script>
 </asp:Content>
 

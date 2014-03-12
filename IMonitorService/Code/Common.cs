@@ -22,7 +22,7 @@ namespace IMonitorService.Code
         public static List<PrinterInformation> PrinterList { get; set; }
         public static List<RouterInformation> RouterList { get; set; }
         public static List<LaptopInformation> LaptopList { get; set; }
-        const int defaultTimeout = 1 * 1000; // 打印机抓取超时，1秒
+        const int defaultTimeout = 5 * 1000; // 打印机抓取超时，5秒
         private static int storeCount = 0; // 店铺数量
         private static int[] laptopComplete; // 笔记本完成Ping的数量
         private static int[] routerComplete; // 路由器完成Ping的数量
@@ -825,17 +825,17 @@ namespace IMonitorService.Code
 
             EmailFrom emailFrom = new EmailFrom("iMonitor@iwooo.com ", "1q2w3e4r", "59.60.9.101", 25);
 
-            List<string> cc = new List<string>(); 
-            cc.Add("liull@iwooo.com");
+            List<string> cc = new List<string>();             
             cc.Add("zhanggb@iwooo.com");
             //cc.Add("HelpDesk.IT@lrgc.com.cn");
 
 
             for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
             {
-                string storeNo = ds.Tables[0].Rows[i][0].ToString();
-                string isSend = ds.Tables[0].Rows[i][1].ToString();
-                string emailAddress = ds.Tables[0].Rows[i][2].ToString();
+                string storeNo = ds.Tables[0].Rows[i]["storeNo"].ToString();
+                string isSend = ds.Tables[0].Rows[i]["isSend"].ToString();
+                string emailAddress = ds.Tables[0].Rows[i]["emailAddress"].ToString();
+                string region = ds.Tables[0].Rows[i]["storeRegion"].ToString();
 
                 string subject = storeNo + " 门店缺墨";
                 string mailBody = storeNo + " 门店墨盒不足10%，请注意更换！";

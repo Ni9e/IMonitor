@@ -21,17 +21,17 @@
   <div class="row">
     <div class="col-md-1"></div>
     <div class="col-md-5">
-      <a href="#fakelink" class="btn btn-block btn-danger" id="routerNetwork">路由器网络: </a>
-      <a href="#fakelink" class="btn btn-block btn-danger" id="printerNetwork">打印机网络: </a>
-      <a href="#fakelink" class="btn btn-block btn-danger" id="printerStatus">打印机状态: </a>
-      <a href="#fakelink" class="btn btn-block btn-danger" id="tonerStatus">墨盒状态: </a>
-      <a href="#fakelink" class="btn btn-block btn-danger" id="laptopNetwork">笔记本网络: </a>     
-    </div>
-    <div class="col-md-5">
       <canvas id="myCanvas" width="560" height="225" style="border:1px solid #c3c3c3;">
         Your browser does not support the canvas element.
       </canvas>
     </div>
+    <div class="col-md-5">
+      <a href="#fakelink" class="btn btn-block btn-danger" id="routerNetwork">路由器网络: </a>
+      <a href="#fakelink" class="btn btn-block btn-danger" id="printerNetwork">打印机网络: </a>
+      <a href="#fakelink" class="btn btn-block btn-danger" id="laptopNetwork">笔记本网络: </a> 
+      <a href="#fakelink" class="btn btn-block btn-danger" id="printerStatus">打印机状态: </a>
+      <a href="#fakelink" class="btn btn-block btn-danger" id="tonerStatus">墨盒状态: </a>          
+    </div>    
     <div class="col-md-1"></div>
   </div>
   <br />

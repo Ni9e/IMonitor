@@ -837,7 +837,9 @@ namespace IMonitorService.Code
                 string region = ds.Tables[0].Rows[i]["storeRegion"].ToString();
 
                 string subject = storeNo + " 门店缺墨";
-                string mailBody = storeNo + " 门店墨盒不足10%，请注意更换！";
+                string mailBody = storeNo + " 门店墨盒不足10%，请注意更换！ 如果需要采购新的硒鼓墨盒，请按以下格式填写信息后发送给Call Center（HelpDesk.IT@lrgc.com.cn） <br><hr><br>";
+                mailBody += MailBodyMessage(storeNo, region);
+
                 EmailHelper email = new EmailHelper(emailFrom, "iwooomonitor@163.com", cc);
                 if (isSend == "False")
                 {
@@ -869,6 +871,94 @@ namespace IMonitorService.Code
                 sendEmail.Add(sendemail);
             }
             SqlHelper.UpdateIsSend(sendEmail);
+        }
+
+        public static string MailBodyMessage(string storeNo, string storeRegion)
+        {
+            StringBuilder sb = new StringBuilder();
+            StringBuilder sa = new StringBuilder();
+            sa.Append("请给__店寄__个硒豉，谢谢！ <br><br>");
+            sa.Append("店号：<br>");
+            sa.Append("店铺地址：<br>");
+            sa.Append("联系电话：<br>");
+            sa.Append("数量：<br>");
+            sa.Append("硒鼓型号：<br>");
+            sa.Append("联系人：<br>");
+            switch (storeRegion)
+            {
+                case "SH":
+                    {
+                        sb.Append("上海区：供应商; 'Yang Qing' <yangqing@tayee.com> <br>");
+                        sb.Append("HI杨生：<br>");
+                        sb.Append(sa.ToString());
+                        sb.Append("开票信息为：斯泽塔塞眼镜商贸(上海)有限公司<br>");
+                        sb.Append("发票备注：王春娟 13832<br>");
+                        sb.Append("请门店把旧的硒鼓寄回上海办公室：上海市徐汇区虹桥路3号港汇中心2座7层 IT部 刘文浩（收），电话：021-24113958.谢谢<br>");
+                    }
+                    break;
+                case "BJ":
+                    {
+                        sb.Append("北京区：供应商：zhaofeng feng.zhao@servicesn.com，抄送Jingli.Du@luxotticaretail.com.cn <br>");
+                        sb.Append("HI Feng:<br>");
+                        sb.Append(sa.ToString());
+                        sb.Append("开票信息为：斯泽塔塞眼镜商贸(北京)有限公司<br>");
+                        sb.Append("发票备注：陈晓菲11502<br>");
+                        sb.Append("请门店把旧的硒鼓寄回上海办公室：上海市徐汇区虹桥路3号港汇中心2座7层 IT部 刘文浩（收），电话：021-24113958.谢谢<br>");
+                    }
+                    break;
+                case "GD":
+                    {
+                        sb.Append("广东区：供应商：朋<376040021@qq.com> <br>");
+                        sb.Append("Hi 鹏:<br>");
+                        sb.Append(sa.ToString());
+                        sb.Append("开票信息：广州明廊眼镜技术有限公司<br>");
+                        sb.Append("发票备注：Carman.Lei 13009<br>");                                            
+                    }
+                    break;
+                default:
+                    {
+                        sb.Append("西区：供应商；'Yang Qing' <yangqing@tayee.com> <br>");
+                        sb.Append("HI 杨生:<br>");
+                        sb.Append(sa.ToString());
+                        sb.Append("开票信息：广州明廊眼镜技术有限公司<br>");
+                        sb.Append("发票备注：吴春蓉 10798<br>");
+                        sb.Append("请门店把旧的硒鼓寄回上海办公室：上海市徐汇区虹桥路3号港汇中心2座7层 IT部 刘文浩（收），电话：021-24113958.谢谢<br>");
+                    }
+                    break;
+            }
+            if (storeNo == "6171")
+            {
+                sb.Clear();
+                sb.Append("北京区：供应商：zhaofeng feng.zhao@servicesn.com，抄送Jingli.Du@luxotticaretail.com.cn <br>");
+                sb.Append("HI Feng:<br>");
+                sb.Append(sa.ToString());
+                sb.Append("开票信息为：北京斯明德商贸有限公司<br>");
+                sb.Append("发票备注：陈晓菲11502<br>");
+                sb.Append("请门店把旧的硒鼓寄回上海办公室：上海市徐汇区虹桥路3号港汇中心2座7层 IT部 刘文浩（收），电话：021-24113958.谢谢<br>");                    
+            }
+            if (storeNo == "6638" || storeNo == "6642")
+            {
+                sb.Clear();
+                sb.Append("北京区：供应商：zhaofeng feng.zhao@servicesn.com，抄送Jingli.Du@luxotticaretail.com.cn <br>");
+                sb.Append("HI Feng:<br>");
+                sb.Append(sa.ToString());
+                sb.Append("开票信息为：斯泽塔塞眼镜商贸(北京)有限公司<br>");
+                sb.Append("发票备注：陈晓菲11502<br>");
+                sb.Append("请门店把旧的硒鼓寄回上海办公室：上海市徐汇区虹桥路3号港汇中心2座7层 IT部 刘文浩（收），电话：021-24113958.谢谢<br>"); 
+            }
+            if (storeNo == "6560" || storeNo == "6456")
+            {
+                sb.Clear();
+                sb.Append("上海区：供应商; 'Yang Qing' <yangqing@tayee.com> <br>");
+                sb.Append("HI Feng:<br>");
+                sb.Append(sa.ToString());
+                sb.Append("开票信息为：斯泽塔塞眼镜商贸(北京)有限公司<br>");
+                sb.Append("发票备注：王春娟 13832<br>");
+                sb.Append("请门店把旧的硒鼓寄回上海办公室：上海市徐汇区虹桥路3号港汇中心2座7层 IT部 刘文浩（收），电话：021-24113958.谢谢<br>");
+            }
+
+            return sb.ToString();
+            
         }
 
         #endregion

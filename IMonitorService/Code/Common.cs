@@ -888,7 +888,7 @@ namespace IMonitorService.Code
             {
                 case "SH":
                     {
-                        sb.Append("上海区：供应商; 'Yang Qing' <yangqing@tayee.com> <br>");
+                        sb.Append("上海区：供应商; 'Yang Qing' yangqing@tayee.com <br>");
                         sb.Append("HI杨生：<br>");
                         sb.Append(sa.ToString());
                         sb.Append("开票信息为：斯泽塔塞眼镜商贸(上海)有限公司<br>");
@@ -908,7 +908,7 @@ namespace IMonitorService.Code
                     break;
                 case "GD":
                     {
-                        sb.Append("广东区：供应商：朋<376040021@qq.com> <br>");
+                        sb.Append("广东区：供应商：朋 376040021@qq.com <br>");
                         sb.Append("Hi 鹏:<br>");
                         sb.Append(sa.ToString());
                         sb.Append("开票信息：广州明廊眼镜技术有限公司<br>");
@@ -917,7 +917,7 @@ namespace IMonitorService.Code
                     break;
                 default:
                     {
-                        sb.Append("西区：供应商；'Yang Qing' <yangqing@tayee.com> <br>");
+                        sb.Append("西区：供应商；'Yang Qing' yangqing@tayee.com <br>");
                         sb.Append("HI 杨生:<br>");
                         sb.Append(sa.ToString());
                         sb.Append("开票信息：广州明廊眼镜技术有限公司<br>");
@@ -949,7 +949,7 @@ namespace IMonitorService.Code
             if (storeNo == "6560" || storeNo == "6456")
             {
                 sb.Clear();
-                sb.Append("上海区：供应商; 'Yang Qing' <yangqing@tayee.com> <br>");
+                sb.Append("上海区：供应商; 'Yang Qing' yangqing@tayee.com <br>");
                 sb.Append("HI Feng:<br>");
                 sb.Append(sa.ToString());
                 sb.Append("开票信息为：斯泽塔塞眼镜商贸(北京)有限公司<br>");

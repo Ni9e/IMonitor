@@ -21,7 +21,7 @@
   <div class="row">
     <div class="col-md-1"></div>
     <div class="col-md-5">
-      <canvas id="myCanvas" width="560" height="225" style="border:1px solid #c3c3c3;">
+      <canvas id="myCanvas" width="560" height="225" style="border:1px solid #c3c3c3; position:absolute;">
         Your browser does not support the canvas element.
       </canvas>
     </div>
@@ -242,7 +242,9 @@
         pNetwork,
         pStatus,
         tStatus,
-        lNetwork;
+        lNetwork,
+        ptype,
+        ttype;
 
     function currentNum(str) {
       var arr = str.match(/\d{1,}/);
@@ -289,11 +291,14 @@
           pNetwork = queryData[0]["PrinterNetwork"];
           pStatus = queryData[0]["PrinterStatus"];
           tStatus = queryData[0]["TonerStatus"];
-          lNetwork = queryData[0]["LaptopNetwork"];          
+          lNetwork = queryData[0]["LaptopNetwork"];
+          ptype = queryData[0]["PrinterType"];
+          ttype = queryData[0]["TonerType"];
+
           $('#routerNetwork').text(routerInfo[rNetwork]);
-          $('#printerNetwork').text(printerInfo[pNetwork]);
+          $('#printerNetwork').text(printerInfo[pNetwork] + "~~[" + ptype + "]");
           $('#printerStatus').text($('#printerStatus').text() + pStatus);
-          $('#tonerStatus').text($('#tonerStatus').text() + tStatus);
+          $('#tonerStatus').text($('#tonerStatus').text() + tStatus + "~~[" + ttype + "]");
           $('#laptopNetwork').text(laptopInfo[lNetwork]);
           if (rNetwork == "Up") {
             $('#routerNetwork').removeClass("btn-danger").addClass("btn-success");

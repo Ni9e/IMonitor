@@ -48,6 +48,8 @@ public partial class IndexJSON : System.Web.UI.Page
                             iq.PrinterStatus = ds.Tables[0].Rows[0]["printerStatus"].ToString();
                             iq.TonerStatus = ds.Tables[0].Rows[0]["tonerStatus"].ToString();
                             iq.LaptopNetwork = ds.Tables[0].Rows[0]["laptopNetwork"].ToString();
+                            iq.PrinterType = ds.Tables[0].Rows[0]["printerType"].ToString();
+                            iq.TonerType = ds.Tables[0].Rows[0]["tonerType"].ToString();
                             list.Add(iq);
                         }                        
                     }

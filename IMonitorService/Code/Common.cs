@@ -512,7 +512,7 @@ namespace IMonitorService.Code
         {
             Ping p = new Ping();
             p.PingCompleted += RouterCallback;
-            p.SendAsync(router.IP, 500, router);
+            p.SendAsync(router.IP, 650, router); // 超时.75秒
             flag.WaitOne();
         }
 
@@ -531,8 +531,8 @@ namespace IMonitorService.Code
         {
             SqlHelper.DeleteRouterInformationTemp();
             Common.DoGetRouterInformationTask();
-            Console.WriteLine("Thread sleep 30s...");
-            Thread.Sleep(30 * 1000);
+            Console.WriteLine("Thread sleep 15s...");
+            Thread.Sleep(15 * 1000);
             Common.DoGetRouterInformationTask();
             SqlHelper.InsertRouterInformation();
         }
@@ -825,8 +825,10 @@ namespace IMonitorService.Code
             EmailFrom emailFrom = new EmailFrom("iMonitor@iwooo.com ", "1q2w3e4r", "59.60.9.101", 25);
 
             List<string> cc = new List<string>();             
-            cc.Add("zhanggb@iwooo.com");
-            //cc.Add("HelpDesk.IT@lrgc.com.cn");
+            //cc.Add("zhanggb@iwooo.com");
+            cc.Add("liull@iwooo.com");
+            cc.Add("iwooomonitor@163.com");
+            cc.Add("HelpDesk.IT@lrgc.com.cn");
 
 
             for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -840,7 +842,7 @@ namespace IMonitorService.Code
                 string mailBody = storeNo + " 门店墨盒不足10%，请注意更换！ 如果需要采购新的硒鼓墨盒，请按以下格式填写信息后发送给Call Center（HelpDesk.IT@lrgc.com.cn） <br><hr><br>";
                 mailBody += MailBodyMessage(storeNo, region);
 
-                EmailHelper email = new EmailHelper(emailFrom, "iwooomonitor@163.com", cc);
+                EmailHelper email = new EmailHelper(emailFrom, emailAddress, cc);
                 if (isSend == "False")
                 {
                     if (email.SendMail(subject, mailBody) == true)

@@ -11,6 +11,7 @@ using System.Text;
 public class IMonitorConfig
 {
     private static string p = AppDomain.CurrentDomain.BaseDirectory;
+    //private static string p = @"C:\Users\helpdesk.it\Documents";
 
     public static string GetSetting(string name)
     {

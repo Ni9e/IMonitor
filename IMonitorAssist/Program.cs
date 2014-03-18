@@ -52,7 +52,7 @@ namespace IMonitorAssist
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-
+                Common.DoGetLaptopInformationTask();
                 //Common.GetPrinterService("10.160.14.50");
 
                 //IndexQuery iq = Common.GetIndexData("6608");

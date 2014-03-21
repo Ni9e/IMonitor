@@ -826,7 +826,7 @@ namespace IMonitorService.Code
 
             List<string> cc = new List<string>();             
             //cc.Add("zhanggb@iwooo.com");
-            cc.Add("liull@iwooo.com");
+            //cc.Add("liull@iwooo.com");
             cc.Add("iwooomonitor@163.com");
             cc.Add("HelpDesk.IT@lrgc.com.cn");
 
@@ -838,8 +838,8 @@ namespace IMonitorService.Code
                 string emailAddress = ds.Tables[0].Rows[i]["emailAddress"].ToString();
                 string region = ds.Tables[0].Rows[i]["storeRegion"].ToString();
 
-                string subject = storeNo + " 门店缺墨";
-                string mailBody = storeNo + " 门店墨盒不足10%，请注意更换！ 如果需要采购新的硒鼓墨盒，请按以下格式填写信息后发送给Call Center（HelpDesk.IT@lrgc.com.cn） <br><hr><br>";
+                string subject = storeNo + " 门店缺墨提醒";
+                string mailBody = " <span style=\"color: rgb(255, 0, 0); font-size: 32px;\">系统邮件，不用回复！</span><br>" + storeNo + "门店墨盒不足10%，请注意更换！ 如果需要采购新的硒鼓墨盒，请按以下格式填写信息后发送给（HelpDesk.IT@lrgc.com.cn） <br><hr><br>";
                 mailBody += MailBodyMessage(storeNo, region);
 
                 EmailHelper email = new EmailHelper(emailFrom, emailAddress, cc);
@@ -879,7 +879,7 @@ namespace IMonitorService.Code
         {
             StringBuilder sb = new StringBuilder();
             StringBuilder sa = new StringBuilder();
-            sa.Append("请给__店寄__个硒豉，谢谢！ <br><br>");
+            sa.Append("请给:    店寄:    个硒豉，谢谢！ <br><br>");
             sa.Append("店号：<br>");
             sa.Append("店铺地址：<br>");
             sa.Append("联系电话：<br>");

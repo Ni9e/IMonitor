@@ -20,7 +20,7 @@ namespace IMonitorAssist
                 {
                     case "PRINT":
                         {
-                            Common.DoGetPrinterInfomationTask();
+                            Common.DoGetPrinterInfomationTask();                            
                         }
                         break;
                     case "ROUTER":
@@ -46,6 +46,12 @@ namespace IMonitorAssist
                             Common.SendLowinkEmailPerStore();
                         }
                         break;
+                    case "PSBOTH":
+                        {
+                            Common.DoGetPrinterInfomationTask();
+                            Common.SendLowinkEmailPerStore();
+                        }
+                        break;
                 }
             }
             else
@@ -53,6 +59,7 @@ namespace IMonitorAssist
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
                 Common.DoGetLaptopInformationTask();
+                
                 //Common.GetPrinterService("10.160.14.50");
 
                 //IndexQuery iq = Common.GetIndexData("6608");
